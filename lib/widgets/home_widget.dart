@@ -17,6 +17,25 @@ class _HomeWidgetState extends State<HomeWidget> {
       color: Colors.white,
       child: Column(
         children: [
+          Column(
+            children: [
+              ListTile(
+                title: Text(
+                  "Welcome, Mia",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+                subtitle: Text("You're ready to use Equal Cash"),
+                trailing: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      child: Image.asset("assets/images/logo1.png"),
+                    )),
+              ),
+            ],
+          ),
           Container(
             // color: Colors.grey,
             height: deviceHeight >= 700 ? 230 : 180,
