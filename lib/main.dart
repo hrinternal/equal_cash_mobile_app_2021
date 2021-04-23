@@ -2,6 +2,7 @@ import 'package:equal_cash/screens/auth_confirmation_screen.dart';
 import 'package:equal_cash/screens/confirm_pin_screen.dart';
 import 'package:equal_cash/screens/create_pin_screen.dart';
 import 'package:equal_cash/screens/forgot_password.dart';
+import 'package:equal_cash/screens/home_screen.dart';
 import 'package:equal_cash/screens/login_screen.dart';
 import 'package:equal_cash/screens/onboarding_screen.dart';
 import 'package:equal_cash/screens/registration_screen.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         ForgotPasswordScreen.routeName: (_) => ForgotPasswordScreen(),
         AuthConfirmationScreen.routeName: (_) => AuthConfirmationScreen(),
         ResetPasswordScreen.routeName: (_) => ResetPasswordScreen(),
+        HomeScreen.routeName: (_) => HomeScreen()
       },
     );
   }

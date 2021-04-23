@@ -1,4 +1,5 @@
 import 'package:equal_cash/screens/forgot_password.dart';
+import 'package:equal_cash/screens/home_screen.dart';
 import 'package:equal_cash/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -113,7 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: BorderRadius.circular(10)),
                               padding: EdgeInsets.symmetric(vertical: 18),
                               onPressed: () {
-                                // Navigator.of(context).pushNamed(RegistrationScreen.routeName);
+                                Navigator.of(context)
+                                    .pushNamed(HomeScreen.routeName);
                               },
                               child: Text(
                                 'Log in',

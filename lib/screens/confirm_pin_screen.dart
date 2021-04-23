@@ -1,4 +1,5 @@
 import 'package:equal_cash/screens/confirm_pin_screen.dart';
+import 'package:equal_cash/screens/home_screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -100,10 +101,10 @@ class _ConfirmPinScreenState extends State<ConfirmPinScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // if (isComplete) {
-    //   Future.delayed(Duration(seconds: 2),
-    //       () => Navigator.of(context).pushNamed(ConfirmPinScreen.routeName));
-    // }
+    if (isComplete) {
+      Future.delayed(Duration(seconds: 2),
+          () => Navigator.of(context).pushNamed(HomeScreen.routeName));
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,

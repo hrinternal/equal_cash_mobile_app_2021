@@ -1,4 +1,5 @@
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
+import 'package:equal_cash/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -158,8 +159,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       borderRadius: BorderRadius.circular(4)),
                   padding: EdgeInsets.symmetric(vertical: 18),
                   onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(AuthConfirmationScreen.routeName);
+                    Navigator.of(context).pushNamed(LoginScreen.routeName);
                   },
                   child: Text(
                     'Reset Password',
