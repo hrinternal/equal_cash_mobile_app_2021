@@ -1,3 +1,4 @@
+import 'package:equal_cash/screens/save_profile_screen.dart';
 import 'package:flutter/material.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
@@ -128,7 +129,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             borderRadius: BorderRadius.circular(4)),
                         padding: EdgeInsets.symmetric(vertical: 13),
                         onPressed: () {
-                          // Navigator.of(context).pushNamed(LoginScreen.routeName);
+                          Navigator.of(context)
+                              .pushNamed(SaveProfileScreen.routeName);
                         },
                         child: Text(
                           'Update profile',
