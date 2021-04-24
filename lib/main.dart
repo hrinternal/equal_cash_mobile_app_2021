@@ -8,6 +8,7 @@ import 'package:equal_cash/screens/onboarding_screen.dart';
 import 'package:equal_cash/screens/registration_screen.dart';
 import 'package:equal_cash/screens/reset_password_screen.dart';
 import 'package:equal_cash/screens/splash_screen.dart';
+import 'package:equal_cash/screens/update_profile_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
         ForgotPasswordScreen.routeName: (_) => ForgotPasswordScreen(),
         AuthConfirmationScreen.routeName: (_) => AuthConfirmationScreen(),
         ResetPasswordScreen.routeName: (_) => ResetPasswordScreen(),
-        HomeScreen.routeName: (_) => HomeScreen()
+        HomeScreen.routeName: (_) => HomeScreen(),
+        UpdateProfileScreen.routeName: (_) => UpdateProfileScreen()
       },
     );
   }

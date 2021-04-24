@@ -1,3 +1,4 @@
+import 'package:equal_cash/screens/update_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:equal_cash/models/home_pager_model.dart';
 
@@ -50,7 +51,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               height: 20,
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pushNamed(UpdateProfileScreen.routeName);
+              },
               child: Container(
                 decoration: BoxDecoration(
                     border: Border.all(width: 1),
