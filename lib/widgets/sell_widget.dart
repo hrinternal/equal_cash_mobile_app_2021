@@ -1,4 +1,4 @@
-import 'dart:html';
+// import 'dart:html';
 
 import 'package:flutter/material.dart';
 
@@ -18,40 +18,56 @@ class _SellWidgetState extends State<SellWidget> {
         child: Column(
           children: [
             Container(
-              height: 100,
+              height: 70,
+              padding: EdgeInsets.symmetric(horizontal: 40),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Column(
+                    // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         "Sell",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                            fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                       Container(
-                        width: 70,
+                        // color: Colors.amber,
+                        width: 60,
                         child: Row(
                           children: [
-                            Text("USD"),
+                            Text(
+                              "USD",
+                              style: TextStyle(fontSize: 12),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
                             Image.asset("assets/images/usicon.png")
                           ],
                         ),
                       )
                     ],
                   ),
+                  Spacer(),
                   Column(
                     children: [
                       Text(
                         "Buy",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                            fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                       Container(
-                        width: 70,
+                        width: 60,
                         child: Row(
                           children: [
-                            Text("NGN"),
+                            Text(
+                              "NGN",
+                              style: TextStyle(fontSize: 12),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
                             Image.asset("assets/images/niger_icon.png")
                           ],
                         ),
@@ -61,16 +77,25 @@ class _SellWidgetState extends State<SellWidget> {
                 ],
               ),
             ),
+            SizedBox(
+              height: 20,
+            ),
             //CURRENCY RATE
             Container(
-              height: 100,
+              alignment: Alignment.center,
+              height: 30,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.swap_vert_rounded),
                   RichText(
                     text: TextSpan(children: [
-                      TextSpan(text: "1 USD - "),
-                      TextSpan(text: "480 NGN"),
+                      TextSpan(
+                          text: "1 USD - ",
+                          style: TextStyle(color: Colors.black, fontSize: 12)),
+                      TextSpan(
+                          text: "480 NGN",
+                          style: TextStyle(color: Colors.black, fontSize: 12)),
                     ]),
                   ),
                 ],
@@ -80,8 +105,10 @@ class _SellWidgetState extends State<SellWidget> {
               height: 20,
             ),
             Container(
-              width: deviceWidth * 0.8,
+              padding: EdgeInsets.all(12),
+              width: deviceWidth * 0.85,
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   width: 2,
                   color: Color.fromRGBO(13, 131, 60, 1),
@@ -89,9 +116,15 @@ class _SellWidgetState extends State<SellWidget> {
               ),
               child: Column(
                 children: [
-                  Text(
-                    "You send",
-                    style: TextStyle(fontSize: 18),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "You send",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 7,
                   ),
                   Row(
                     children: [
@@ -106,7 +139,16 @@ class _SellWidgetState extends State<SellWidget> {
                           width: 70,
                           child: Row(children: [
                             Image.asset("assets/images/usicon.png"),
-                            Text("USD"),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "USD",
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
                           ]))
                     ],
                   )
@@ -117,8 +159,10 @@ class _SellWidgetState extends State<SellWidget> {
               height: 20,
             ),
             Container(
-              width: deviceWidth * 0.8,
+              padding: EdgeInsets.all(12),
+              width: deviceWidth * 0.85,
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   width: 2,
                   color: Color.fromRGBO(13, 131, 60, 1),
@@ -126,9 +170,15 @@ class _SellWidgetState extends State<SellWidget> {
               ),
               child: Column(
                 children: [
-                  Text(
-                    "They receive",
-                    style: TextStyle(fontSize: 18),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "They receive",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 7,
                   ),
                   Row(
                     children: [
@@ -142,8 +192,17 @@ class _SellWidgetState extends State<SellWidget> {
                       Container(
                           width: 70,
                           child: Row(children: [
-                            Image.asset("assets/images/usicon.png"),
-                            Text("USD"),
+                            Image.asset("assets/images/niger_icon.png"),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              "NGN",
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
                           ]))
                     ],
                   )
@@ -151,27 +210,35 @@ class _SellWidgetState extends State<SellWidget> {
               ),
             ),
             SizedBox(
-              height: 40,
-            ),
-            TextField(
-              decoration: InputDecoration(
-                  hintText: "Set time (in hours)",
-                  suffixIcon: Icon(Icons.timer)),
-            ),
-            SizedBox(
-              height: 60,
+              height: 45,
             ),
             Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                decoration: InputDecoration(
+                    hintText: "Set time (in hours)",
+                    hintStyle: TextStyle(fontSize: 13),
+                    suffixIcon: Icon(Icons.timer)),
               ),
+            ),
+            SizedBox(
+              height: 40,
+            ),
+            Container(
+              width: deviceWidth * 0.84,
+              decoration: BoxDecoration(),
               child: FlatButton(
+                padding: EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 color: Color.fromRGBO(14, 129, 59, 1),
                 onPressed: () {},
                 child: Text(
                   "Done >",
                   style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                      fontSize: 15,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             )

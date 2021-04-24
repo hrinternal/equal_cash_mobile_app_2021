@@ -23,9 +23,17 @@ class _HomeWidgetState extends State<HomeWidget> {
                 title: Text(
                   "Welcome, Mia",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.black),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 20),
                 ),
-                subtitle: Text("You're ready to use Equal Cash"),
+                subtitle: Text(
+                  "You're ready to use Equal Cash",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      // color: Colors.black,
+                      fontSize: 12),
+                ),
                 trailing: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Container(
@@ -36,15 +44,18 @@ class _HomeWidgetState extends State<HomeWidget> {
               ),
             ],
           ),
+          SizedBox(
+            height: 17,
+          ),
           Container(
             // color: Colors.grey,
-            height: deviceHeight >= 700 ? 230 : 180,
+            height: deviceHeight >= 700 ? 250 : 180,
             child: PageView.builder(
               itemBuilder: (_, index) {
                 return Column(
                   children: [
                     Container(
-                        height: deviceHeight < 700 ? 120 : 180,
+                        height: deviceHeight < 700 ? 120 : 190,
                         child: Image.asset(
                           pagers[index].image,
                           fit: BoxFit.cover,
@@ -131,19 +142,15 @@ class _HomeWidgetState extends State<HomeWidget> {
             ),
           ),
           SizedBox(
-            height: deviceHeight < 700 ? 7 : 20,
+            height: deviceHeight < 700 ? 7 : 10,
           ),
           //
           //ACTIVITIES
           //
-          Container(
-            // color: Colors.amber,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                  minHeight: deviceHeight < 700 ? 130 : 200,
-                  maxHeight: deviceHeight < 700
-                      ? deviceHeight * 0.36
-                      : deviceHeight * 0.36),
+          SingleChildScrollView(
+            child: Container(
+              height: 176,
+              // color: Colors.amber,
               child: ListView(
                 children: [
                   ListTile(
@@ -194,7 +201,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                       ),
                     ),
                   ),
-                  deviceHeight >= 600
+                  deviceHeight >= 700
                       ? ListTile(
                           leading: Icon(
                             Icons.send_outlined,
@@ -210,7 +217,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                           subtitle: Text(
                             "You created a sell request - \$100 USD",
                             style: TextStyle(
-                                fontSize: deviceHeight < 600 ? 11 : 13),
+                                fontSize: deviceHeight < 700 ? 11 : 13),
                           ),
                           trailing: Text(
                             "12, Feb",

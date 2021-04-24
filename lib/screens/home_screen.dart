@@ -1,4 +1,8 @@
 import 'package:equal_cash/models/home_pager_model.dart';
+import 'package:equal_cash/widgets/alert_widget.dart';
+import 'package:equal_cash/widgets/home_widget.dart';
+import 'package:equal_cash/widgets/profile_widget.dart';
+import 'package:equal_cash/widgets/sell_widget.dart';
 import "package:flutter/material.dart";
 
 class HomeScreen extends StatefulWidget {
@@ -11,6 +15,13 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentPage = 0;
   int bottomBarIndex = 0;
 
+  List<Widget> homeWidgets = [
+    HomeWidget(),
+    SellWidget(),
+    AlertWidget(),
+    ProfileWidget()
+  ];
+
   @override
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
@@ -19,13 +30,12 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Color.fromRGBO(121, 128, 235, 1)),
+          backgroundColor: Color.fromRGBO(14, 129, 59, 1),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         drawer: Drawer(),
-        body: Container(
-          color: Colors.white,
-        ),
+        body:
+            Container(color: Colors.white, child: homeWidgets[bottomBarIndex]),
         bottomNavigationBar: BottomNavigationBar(
           items: [
             BottomNavigationBarItem(
