@@ -1,4 +1,6 @@
 import 'package:equal_cash/screens/currency_sell_request_screen.dart';
+import 'package:equal_cash/screens/home_screen.dart';
+import 'package:equal_cash/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 
 class UpdatedProfileScreen extends StatefulWidget {
@@ -16,6 +18,13 @@ class _UpdatedProfileScreenState extends State<UpdatedProfileScreen> {
           "Updated profile",
           style: TextStyle(fontSize: 17),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.home_rounded),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(HomeScreen.routeName),
+          ),
+        ],
       ),
       body: Container(
         color: Colors.white,
@@ -159,6 +168,8 @@ class _UpdatedProfileScreenState extends State<UpdatedProfileScreen> {
               ),
               Container(
                 child: ListTile(
+                  onTap: () =>
+                      Navigator.of(context).pushNamed(SettingsScreen.routeName),
                   leading: Icon(Icons.settings,
                       color: Theme.of(context).primaryColor),
                   title: Text(

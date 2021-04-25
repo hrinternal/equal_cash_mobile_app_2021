@@ -1,3 +1,4 @@
+import 'package:equal_cash/screens/home_screen.dart';
 import 'package:equal_cash/screens/save_profile_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           "Update profile",
           style: TextStyle(fontSize: 17),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.home_rounded),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(HomeScreen.routeName),
+          ),
+        ],
       ),
       body: Container(
         child: Padding(

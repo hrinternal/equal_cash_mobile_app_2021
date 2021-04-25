@@ -9,6 +9,7 @@ import 'package:equal_cash/screens/onboarding_screen.dart';
 import 'package:equal_cash/screens/registration_screen.dart';
 import 'package:equal_cash/screens/reset_password_screen.dart';
 import 'package:equal_cash/screens/save_profile_screen.dart';
+import 'package:equal_cash/screens/settings_screen.dart';
 import 'package:equal_cash/screens/splash_screen.dart';
 import 'package:equal_cash/screens/update_profile_screen.dart';
 import 'package:equal_cash/screens/updated_profile_screen.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         SaveProfileScreen.routeName: (_) => SaveProfileScreen(),
         UpdatedProfileScreen.routeName: (_) => UpdatedProfileScreen(),
         CurrencySellRequestScreen.routeName: (_) => CurrencySellRequestScreen(),
+        SettingsScreen.routeName: (_) => SettingsScreen(),
       },
     );
   }

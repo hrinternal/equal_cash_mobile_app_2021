@@ -1,4 +1,5 @@
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
+import 'package:equal_cash/screens/home_screen.dart';
 import 'package:equal_cash/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         elevation: 0,
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Color.fromRGBO(121, 128, 235, 1)),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.home_rounded),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(HomeScreen.routeName),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(

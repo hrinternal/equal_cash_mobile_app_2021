@@ -1,3 +1,4 @@
+import 'package:equal_cash/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class CurrencySellRequestScreen extends StatefulWidget {
@@ -18,6 +19,13 @@ class _CurrencySellRequestScreenState extends State<CurrencySellRequestScreen> {
           "Request sell",
           style: TextStyle(fontSize: 17),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.home_rounded),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(HomeScreen.routeName),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(14.0),
