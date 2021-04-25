@@ -38,8 +38,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 trailing: IconButton(
                     icon: Icon(
                       Icons.toggle_off_outlined,
+                      color: Theme.of(context).primaryColor,
                     ),
                     onPressed: () {})),
+            Divider(
+              indent: 15,
+              endIndent: 15,
+              thickness: 1,
+            ),
             ListTile(
                 title: Text("Email notifications"),
                 subtitle: Text(
@@ -47,6 +53,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 trailing: IconButton(
                     icon: Icon(
                       Icons.toggle_off_outlined,
+                      color: Theme.of(context).primaryColor,
                     ),
                     onPressed: () {}))
           ],
