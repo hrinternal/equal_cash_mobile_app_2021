@@ -1,4 +1,5 @@
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
+import 'package:equal_cash/screens/change_password_screen.dart';
 import 'package:equal_cash/screens/confirm_pin_screen.dart';
 import 'package:equal_cash/screens/create_pin_screen.dart';
 import 'package:equal_cash/screens/currency_sell_request_screen.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         UpdatedProfileScreen.routeName: (_) => UpdatedProfileScreen(),
         CurrencySellRequestScreen.routeName: (_) => CurrencySellRequestScreen(),
         SettingsScreen.routeName: (_) => SettingsScreen(),
+        ChangePasswordScreen.routeName: (_) => ChangePasswordScreen(),
       },
     );
   }

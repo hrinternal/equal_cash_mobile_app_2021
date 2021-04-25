@@ -1,3 +1,4 @@
+import 'package:equal_cash/screens/change_password_screen.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -28,15 +29,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           Container(
             child: ListTile(
-              // onTap: () => Navigator.of(context)
-              //     .pushNamed(),
+              onTap: () => Navigator.of(context)
+                  .pushNamed(ChangePasswordScreen.routeName),
               // leading: Icon(Icons.send_to_mobile,
               //     color: Theme.of(context).primaryColor),
               leading: Text(
                 "Change password",
                 style: TextStyle(fontSize: 15, color: Colors.black),
               ),
-              trailing: Icon(Icons.arrow_forward_ios_rounded),
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
           ),
           Container(
@@ -53,7 +57,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 "Change pin",
                 style: TextStyle(fontSize: 15, color: Colors.black),
               ),
-              trailing: Icon(Icons.arrow_forward_ios_rounded),
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
           ),
           Container(
@@ -70,7 +77,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 "Notifications",
                 style: TextStyle(fontSize: 15, color: Colors.black),
               ),
-              trailing: Icon(Icons.arrow_forward_ios_rounded),
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
           ),
         ],
