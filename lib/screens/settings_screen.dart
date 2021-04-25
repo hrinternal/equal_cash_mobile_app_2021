@@ -1,5 +1,6 @@
 import 'package:equal_cash/screens/change_password_screen.dart';
 import 'package:equal_cash/screens/home_screen.dart';
+import 'package:equal_cash/screens/notification_screen.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -71,6 +72,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           Container(
             child: ListTile(
+              onTap: () =>
+                  Navigator.of(context).pushNamed(NotificationScreen.routeName),
               // leading:
               //     Icon(Icons.logout, color: Theme.of(context).primaryColor),
               title: Text(

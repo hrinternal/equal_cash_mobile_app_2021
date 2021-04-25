@@ -6,6 +6,7 @@ import 'package:equal_cash/screens/currency_sell_request_screen.dart';
 import 'package:equal_cash/screens/forgot_password.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:equal_cash/screens/login_screen.dart';
+import 'package:equal_cash/screens/notification_screen.dart';
 import 'package:equal_cash/screens/onboarding_screen.dart';
 import 'package:equal_cash/screens/registration_screen.dart';
 import 'package:equal_cash/screens/reset_password_screen.dart';
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
         CurrencySellRequestScreen.routeName: (_) => CurrencySellRequestScreen(),
         SettingsScreen.routeName: (_) => SettingsScreen(),
         ChangePasswordScreen.routeName: (_) => ChangePasswordScreen(),
+        NotificationScreen.routeName: (_) => NotificationScreen(),
       },
     );
   }
