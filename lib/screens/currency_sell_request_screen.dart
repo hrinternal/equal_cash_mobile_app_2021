@@ -50,38 +50,65 @@ class _CurrencySellRequestScreenState extends State<CurrencySellRequestScreen> {
               height: 25,
             ),
             Container(
-                decoration: BoxDecoration(border: Border.all()),
-                // height: 100,
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                width: double.maxFinite,
-                // color: Colors.amber,
-                child: DropdownButton<String>(
-                  value: currencySelected,
-                  icon: const Icon(Icons.arrow_downward),
-                  iconSize: 24,
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.deepPurple),
-                  // underline: Container(
-                  //   height: 2,
-                  //   color: Colors.deepPurpleAccent,
-                  // ),
-                  isExpanded: true,
-                  onChanged: (String newValue) {
-                    setState(() {
-                      currencySelected = newValue;
-                    });
-                  },
-                  items: <String>[
-                    'NGN Nigerian Naira',
-                    'USD US Dollars',
-                    'GHS Ghana Cedis'
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                ))
+              decoration: BoxDecoration(border: Border.all()),
+              // height: 100,
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              width: double.maxFinite,
+              // color: Colors.amber,
+              child: DropdownButton<String>(
+                value: currencySelected,
+                icon: const Icon(Icons.arrow_downward),
+                iconSize: 24,
+                elevation: 16,
+                style: const TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold),
+                // underline: Container(
+                //   height: 2,
+                //   color: Colors.deepPurpleAccent,
+                // ),
+                isExpanded: true,
+                onChanged: (String newValue) {
+                  setState(() {
+                    currencySelected = newValue;
+                  });
+                },
+                items: <String>[
+                  'NGN Nigerian Naira',
+                  'USD US Dollars',
+                  'GHS Ghana Cedis'
+                ].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ),
+            SizedBox(
+              height: 40,
+            ),
+            Container(
+              // margin: EdgeInsets.symmetric(horizontal: 20),
+              width: double.maxFinite,
+              // margin: EdgeInsets.symmetric(horizontal: 20),
+              child: FlatButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4)),
+                padding: EdgeInsets.symmetric(vertical: 13),
+                onPressed: () {
+                  // Navigator.of(context)
+                  //     .pushNamed(SaveProfileScreen.routeName);
+                },
+                child: Text(
+                  'Set currency',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
           ],
         ),
       ),
