@@ -1,3 +1,5 @@
+import 'package:equal_cash/screens/update_profile_screen.dart';
+import 'package:equal_cash/screens/updated_profile_screen.dart';
 import 'package:flutter/material.dart';
 
 class SaveProfileScreen extends StatefulWidget {
@@ -13,7 +15,12 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          title: Text(
+            "Save profile",
+            style: TextStyle(fontSize: 17),
+          ),
+        ),
         body: Container(
           child: Padding(
             padding: const EdgeInsets.all(12.0),
@@ -122,7 +129,7 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 5),
                   child: TextField(
-                    autofocus: true,
+                    autofocus: false,
                     // controller: _emailController,
                     decoration: InputDecoration(
                       hintText: "Enter address here",
@@ -144,8 +151,8 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
                         borderRadius: BorderRadius.circular(4)),
                     padding: EdgeInsets.symmetric(vertical: 13),
                     onPressed: () {
-                      // Navigator.of(context)
-                      //     .pushNamed(SaveProfileScreen.routeName);
+                      Navigator.of(context)
+                          .pushNamed(UpdatedProfileScreen.routeName);
                     },
                     child: Text(
                       'Save changes',

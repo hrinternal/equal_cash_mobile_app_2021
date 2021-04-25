@@ -1,6 +1,7 @@
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
 import 'package:equal_cash/screens/confirm_pin_screen.dart';
 import 'package:equal_cash/screens/create_pin_screen.dart';
+import 'package:equal_cash/screens/currency_sell_request_screen.dart';
 import 'package:equal_cash/screens/forgot_password.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:equal_cash/screens/login_screen.dart';
@@ -10,6 +11,7 @@ import 'package:equal_cash/screens/reset_password_screen.dart';
 import 'package:equal_cash/screens/save_profile_screen.dart';
 import 'package:equal_cash/screens/splash_screen.dart';
 import 'package:equal_cash/screens/update_profile_screen.dart';
+import 'package:equal_cash/screens/updated_profile_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -38,6 +40,8 @@ class MyApp extends StatelessWidget {
         HomeScreen.routeName: (_) => HomeScreen(),
         UpdateProfileScreen.routeName: (_) => UpdateProfileScreen(),
         SaveProfileScreen.routeName: (_) => SaveProfileScreen(),
+        UpdatedProfileScreen.routeName: (_) => UpdatedProfileScreen(),
+        CurrencySellRequestScreen.routeName: (_) => CurrencySellRequestScreen(),
       },
     );
   }
