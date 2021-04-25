@@ -2,7 +2,7 @@ import 'package:equal_cash/models/home_pager_model.dart';
 import 'package:equal_cash/widgets/alert_widget.dart';
 import 'package:equal_cash/widgets/home_widget.dart';
 import 'package:equal_cash/widgets/profile_widget.dart';
-import 'package:equal_cash/widgets/sell_widget.dart';
+import 'package:equal_cash/widgets/currency_sell_widget.dart';
 import "package:flutter/material.dart";
 
 class HomeScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> homeWidgets = [
     HomeWidget(),
-    SellWidget(),
+    CurrencySellWidget(),
     AlertWidget(),
     ProfileWidget()
   ];
