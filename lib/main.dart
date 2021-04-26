@@ -1,3 +1,4 @@
+import 'package:equal_cash/screens/all_requests.dart';
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
 import 'package:equal_cash/screens/change_password_screen.dart';
 import 'package:equal_cash/screens/confirm_currency_buy.dart';
@@ -53,7 +54,8 @@ class MyApp extends StatelessWidget {
         NotificationScreen.routeName: (_) => NotificationScreen(),
         ConfirmCurrencyPurchase.routeName: (_) => ConfirmCurrencyPurchase(),
         CurrencyBuy.routeName: (_) => CurrencyBuy(),
-        MyRequestScreen.routeName: (_) => MyRequestScreen()
+        MyRequestScreen.routeName: (_) => MyRequestScreen(),
+        AllRequestScreen.routeName: (_) => AllRequestScreen(),
       },
     );
   }
