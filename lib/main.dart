@@ -1,6 +1,7 @@
 import 'package:equal_cash/screens/all_requests.dart';
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
 import 'package:equal_cash/screens/change_password_screen.dart';
+import 'package:equal_cash/screens/completed_transactions.dart';
 import 'package:equal_cash/screens/confirm_currency_buy.dart';
 import 'package:equal_cash/screens/confirm_pin_screen.dart';
 import 'package:equal_cash/screens/create_pin_screen.dart';
@@ -12,6 +13,7 @@ import 'package:equal_cash/screens/login_screen.dart';
 import 'package:equal_cash/screens/my_request_screen.dart';
 import 'package:equal_cash/screens/notification_screen.dart';
 import 'package:equal_cash/screens/onboarding_screen.dart';
+import 'package:equal_cash/screens/pending_transactions.dart';
 import 'package:equal_cash/screens/registration_screen.dart';
 import 'package:equal_cash/screens/reset_password_screen.dart';
 import 'package:equal_cash/screens/save_profile_screen.dart';
@@ -56,6 +58,8 @@ class MyApp extends StatelessWidget {
         CurrencyBuy.routeName: (_) => CurrencyBuy(),
         MyRequestScreen.routeName: (_) => MyRequestScreen(),
         AllRequestScreen.routeName: (_) => AllRequestScreen(),
+        PendingTransaction.routeName: (_) => PendingTransaction(),
+        CompletedTransaction.routeName: (_) => CompletedTransaction()
       },
     );
   }
