@@ -1,5 +1,6 @@
 import 'package:equal_cash/models/home_pager_model.dart';
 import 'package:equal_cash/widgets/alert_widget.dart';
+import 'package:equal_cash/widgets/app_drawer_widget.dart';
 import 'package:equal_cash/widgets/home_widget.dart';
 import 'package:equal_cash/widgets/profile_widget.dart';
 import 'package:equal_cash/widgets/currency_sell_widget.dart';
@@ -33,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Color.fromRGBO(14, 129, 59, 1),
           iconTheme: IconThemeData(color: Colors.white),
         ),
-        drawer: Drawer(),
+        drawer: AppDrawerWidget(),
         body:
             Container(color: Colors.white, child: homeWidgets[bottomBarIndex]),
         bottomNavigationBar: BottomNavigationBar(
