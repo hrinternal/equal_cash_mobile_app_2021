@@ -207,17 +207,6 @@ class _PendingTransactionState extends State<PendingTransaction> {
                     ),
                   ),
                 ),
-                SizedBox(height: 70),
-                // Spacer(),
-                InkWell(
-                  onTap: () {},
-                  child: Text(
-                    "What do the colored dots mean?",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromRGBO(121, 128, 235, 1)),
-                  ),
-                )
               ],
             ),
           ),

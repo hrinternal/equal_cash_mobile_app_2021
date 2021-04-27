@@ -36,6 +36,11 @@ dev_dependencies:
   country_picker: ^2.0.4
   pin_code_fields: ^7.0.0
   virtual_keyboard_multi_language: ^0.2.2
+  provider: ^5.0.0
+  email_validator: ^2.0.1
+  string_validator: ^0.3.0
+  http: ^0.13.1
+  intl_phone_number_input: ^0.7.0+1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

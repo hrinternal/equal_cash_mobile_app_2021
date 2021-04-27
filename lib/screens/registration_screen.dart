@@ -1,6 +1,11 @@
+import 'package:equal_cash/providers/auth_provider.dart';
 import 'package:equal_cash/screens/create_pin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:string_validator/string_validator.dart' as validator;
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:provider/provider.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String routeName = "registration";
@@ -9,8 +14,53 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  final _formKey = GlobalKey();
+  final GlobalKey<FormState> _formKey = GlobalKey();
   String country;
+
+  //TEXT CONTROLLERS
+  final _firstnameController = TextEditingController();
+  final _lastnameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  //SAVED DATA
+  Map<String, dynamic> savedData = {
+    "country": "Nigeria",
+    "firstname": "",
+    "lastname": "",
+    "email": "",
+    "password": "",
+    "confirmPassword": "",
+    "terms": ""
+  };
+
+  //PASSWORD VISIBILITY
+  bool isVisible = false;
+
+  //TERMS
+  bool isTerm = false;
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    _formKey.currentState.save();
+    CircularProgressIndicator(
+      strokeWidth: 5,
+      semanticsLabel: "Registering ${_firstnameController.text}",
+    );
+    await Provider.of<AuthProvider>(context).register(
+        savedData["country"],
+        savedData["firstname"],
+        savedData["lastname"],
+        savedData["email"],
+        savedData["email"],
+        savedData["password"],
+        savedData["confirmPassword"],
+        savedData["terms"]);
+  }
 
   @override
   void initState() {
@@ -43,7 +93,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
               ),
               SizedBox(
-                height: deviceHeight >= 600 ? 30 : 23,
+                height: 20,
               ),
               SingleChildScrollView(
                 child: Padding(
@@ -76,7 +126,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               showOnlyCountryWhenClosed: true,
                               onChanged: (cCode) {
                                 setState(() {
-                                  country = cCode.name;
+                                  savedData["country"] = cCode.name;
                                 });
                                 print(country);
                               },
@@ -87,46 +137,197 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           Divider(
                             thickness: 2,
                           ),
-                          //STATE
+                          //FIRSTNAME
                           TextFormField(
+                            textInputAction: TextInputAction.next,
+                            controller: _firstnameController,
+                            onSaved: (fName) {
+                              savedData["firstname"] = fName;
+                            },
+                            validator: (firstname) {
+                              if (firstname.isEmpty) {
+                                return "Please enter your first name";
+                              } else if (!validator.isAlpha(firstname)) {
+                                return "Please enter a valid first name";
+                              } else {
+                                return null;
+                              }
+                            },
                             decoration: InputDecoration(
-                                labelText: "State",
+                                prefixIcon: Icon(
+                                  Icons.person_outline_rounded,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                labelText: "Firstname",
                                 labelStyle: TextStyle(
                                     fontSize: deviceHeight >= 600 ? 18 : 14)),
                           ),
-                          SizedBox(
-                            height: deviceHeight >= 600 ? 35 : 22,
-                          ),
-                          //LOGIN DETAILS
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Your login details",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: deviceHeight >= 600 ? 18 : 14,
-                                  color: Color.fromRGBO(88, 20, 235, 1)),
-                            ),
-                          ),
-                          //EMAIL
+                          SizedBox(height: 10),
+                          //LASTNAME
                           TextFormField(
+                            textInputAction: TextInputAction.next,
+                            controller: _lastnameController,
+                            onSaved: (lName) {
+                              savedData["lastname"] = lName;
+                            },
+                            validator: (lastname) {
+                              if (lastname.isEmpty) {
+                                return "Please enter your last name";
+                              } else if (!validator.isAlpha(lastname)) {
+                                return "Please enter a valid first name";
+                              } else {
+                                return null;
+                              }
+                            },
                             decoration: InputDecoration(
-                                labelText: "Email",
+                                prefixIcon: Icon(
+                                  Icons.person,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                labelText: "Lastname",
                                 labelStyle: TextStyle(
                                     fontSize: deviceHeight >= 600 ? 18 : 14)),
                           ),
                           SizedBox(
                             height: 10,
                           ),
+                          //LOGIN DETAILS
+                          // Container(
+                          //   alignment: Alignment.centerLeft,
+                          //   child: Text(
+                          //     "Your login details",
+                          //     style: TextStyle(
+                          //         fontWeight: FontWeight.bold,
+                          //         fontSize: deviceHeight >= 600 ? 18 : 14,
+                          //         color: Color.fromRGBO(88, 20, 235, 1)),
+                          //   ),
+                          // ),
+                          //EMAIL
+                          TextFormField(
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            controller: _emailController,
+                            onSaved: (email) {
+                              savedData["email"] = email;
+                            },
+                            validator: (email) {
+                              print(EmailValidator.validate(email));
+                              if (EmailValidator.validate(email)) {
+                                return null;
+                              } else {
+                                return "Please enter a valid email address";
+                              }
+                            },
+                            decoration: InputDecoration(
+                                prefixIcon: Icon(
+                                  Icons.email,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                labelText: "Email",
+                                labelStyle: TextStyle(
+                                    fontSize: deviceHeight >= 600 ? 18 : 14)),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          //PHONE NUMBER
+                          InternationalPhoneNumberInput(
+                            onInputChanged: (PhoneNumber number) {
+                              print(number.phoneNumber);
+                            },
+                            // onInputValidated: (bool value) {
+                            //   print(value);
+                            // },
+                            selectorConfig: SelectorConfig(
+                              selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                            ),
+                            ignoreBlank: false,
+                            // autoValidateMode:
+                            //     AutovalidateMode.onUserInteraction,
+                            selectorTextStyle: TextStyle(color: Colors.black),
+                            textFieldController: _phoneController,
+                            formatInput: false,
+                            keyboardType: TextInputType.numberWithOptions(
+                              signed: true,
+                            ),
+                            // inputBorder: OutlineInputBorder(),
+                            onSaved: (PhoneNumber number) {
+                              print('On Saved: $number');
+                              setState(() {
+                                savedData["confirmPassword"] =
+                                    number.toString();
+                              });
+                            },
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
                           //PASSWORD
                           TextFormField(
+                            textInputAction: TextInputAction.next,
+                            controller: _passwordController,
+                            onSaved: (password) {
+                              savedData["password"] = password;
+                            },
+                            validator: (password) {
+                              //  if(isLength())
+                              if (password.length < 8 ||
+                                  password.isEmpty ||
+                                  !password.contains(RegExp(r"[a-z]")) ||
+                                  !password.contains(RegExp(r"[A-Z]")) ||
+                                  !password.contains(RegExp(r"[0-9]"))) {
+                                return "Please follow the password instructions";
+                              } else {
+                                return null;
+                              }
+                            },
+                            obscureText: isVisible,
                             decoration: InputDecoration(
                                 labelText: "Password",
                                 labelStyle: TextStyle(
                                     fontSize: deviceHeight >= 600 ? 18 : 14),
                                 suffixIcon: IconButton(
-                                    icon: Icon(Icons.visibility),
-                                    onPressed: () {})),
+                                    icon: Icon(isVisible
+                                        ? Icons.visibility_off
+                                        : Icons.visibility),
+                                    onPressed: () {
+                                      setState(() {
+                                        isVisible = !isVisible;
+                                      });
+                                    })),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          //PASSWORD
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            controller: _confirmPasswordController,
+                            onSaved: (cPassword) {
+                              savedData["confirmPassword"] = cPassword;
+                            },
+                            validator: (cPassword) {
+                              //  if(isLength())
+                              if (cPassword != _passwordController.text) {
+                                return "Password does not match";
+                              } else {
+                                return null;
+                              }
+                            },
+                            obscureText: isVisible,
+                            decoration: InputDecoration(
+                                labelText: "Confirm password",
+                                labelStyle: TextStyle(
+                                    fontSize: deviceHeight >= 600 ? 18 : 14),
+                                suffixIcon: IconButton(
+                                    icon: Icon(isVisible
+                                        ? Icons.visibility_off
+                                        : Icons.visibility),
+                                    onPressed: () {
+                                      setState(() {
+                                        isVisible = !isVisible;
+                                      });
+                                    })),
                           ),
                           SizedBox(
                             height: 5,
@@ -170,16 +371,23 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           SizedBox(
                             height: deviceHeight >= 600 ? 15 : 5,
                           ),
-                          //REFERRAL CODE
-                          TextFormField(
-                            decoration: InputDecoration(
-                                labelText: "Referral Code (optional)",
-                                labelStyle: TextStyle(
-                                    fontSize: deviceHeight >= 600 ? 18 : 14)),
+                          // TERMS AND CONDITION
+                          Container(
+                            child: FlatButton.icon(
+                                onPressed: () {
+                                  setState(() {
+                                    isTerm = !isTerm;
+                                    savedData["terms"] = isTerm;
+                                  });
+                                },
+                                icon: Icon(isTerm
+                                    ? Icons.check_box_outlined
+                                    : Icons.check_box_outline_blank_rounded),
+                                label: Text(
+                                    "I agree to the Terms and Conditions")),
                           ),
-                          SizedBox(
-                            height: deviceHeight >= 600 ? 50 : 40,
-                          ),
+
+                          SizedBox(height: 10),
                           //REGISTER BUTTON
                           Container(
                             width: double.maxFinite,

@@ -185,17 +185,6 @@ class _UpdatedProfileScreenState extends State<UpdatedProfileScreen> {
                   thickness: 2,
                 ),
               ),
-              Container(
-                child: ListTile(
-                  leading:
-                      Icon(Icons.logout, color: Theme.of(context).primaryColor),
-                  title: Text(
-                    "Logout",
-                    style: TextStyle(fontSize: 15, color: Colors.black),
-                  ),
-                  trailing: Icon(Icons.arrow_forward_ios_rounded),
-                ),
-              ),
             ],
           ),
         ),

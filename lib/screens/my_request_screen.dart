@@ -60,6 +60,16 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                   height: 20,
                 ),
                 ListTile(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return Container(
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            child: AlertDialogWidget(),
+                          );
+                        });
+                  },
                   leading: Icon(
                     Icons.circle,
                     size: 10,
@@ -110,6 +120,16 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                   thickness: 2,
                 ),
                 ListTile(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return Container(
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            child: AlertDialogWidget(),
+                          );
+                        });
+                  },
                   leading: Icon(Icons.circle,
                       size: 10, color: Theme.of(context).primaryColor),
                   title: Text(
@@ -158,6 +178,16 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                   thickness: 2,
                 ),
                 ListTile(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return Container(
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            child: AlertDialogWidget(),
+                          );
+                        });
+                  },
                   leading: Icon(
                     Icons.circle,
                     size: 10,
@@ -221,6 +251,96 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class AlertDialogWidget extends StatelessWidget {
+  const AlertDialogWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Row(
+        children: [
+          Text(
+            "Sell request summary",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+          Spacer(),
+          IconButton(
+              icon: Icon(
+                Icons.cancel,
+                color: Colors.red[900],
+              ),
+              onPressed: () => Navigator.of(context).pop())
+        ],
+      ),
+      content: Container(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text("From"),
+              trailing: Text(
+                "\$100USD",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            ListTile(
+              title: Text("To"),
+              trailing: Text(
+                "\N48,000",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            ListTile(
+              title: Text("Exchange rate"),
+              trailing: Text(
+                "\$1USD - N480 NGN",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(121, 128, 235, 1)),
+              ),
+            ),
+            ListTile(
+              title: Text("Time frame"),
+              trailing: Text(
+                "24 Hrs",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(121, 128, 235, 1)),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              width: double.maxFinite,
+              // margin: EdgeInsets.symmetric(horizontal: 20),
+              child: FlatButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
+                padding: EdgeInsets.symmetric(vertical: 13),
+                onPressed: () {
+                  // Navigator.of(context)
+                  //     .pushNamed(SaveProfileScreen.routeName);
+                },
+                child: Text(
+                  'Create request',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ],
         ),
       ),
     );

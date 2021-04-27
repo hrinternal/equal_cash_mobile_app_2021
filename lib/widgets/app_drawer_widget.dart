@@ -2,6 +2,7 @@ import 'package:equal_cash/screens/all_requests.dart';
 import 'package:equal_cash/screens/completed_transactions.dart';
 import 'package:equal_cash/screens/my_request_screen.dart';
 import 'package:equal_cash/screens/pending_transactions.dart';
+import 'package:equal_cash/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppDrawerWidget extends StatefulWidget {
@@ -95,6 +96,8 @@ class _AppDrawerWidgetState extends State<AppDrawerWidget> {
             thickness: 1,
           ),
           ListTile(
+            onTap: () =>
+                Navigator.of(context).pushNamed(SettingsScreen.routeName),
             leading: Icon(
               Icons.settings,
               color: Theme.of(context).primaryColor,

@@ -1,3 +1,5 @@
+import 'package:equal_cash/screens/currency_sell_request_screen.dart';
+import 'package:equal_cash/screens/settings_screen.dart';
 import 'package:equal_cash/screens/update_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:equal_cash/models/home_pager_model.dart';
@@ -110,6 +112,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               height: 25,
             ),
             ListTile(
+              onTap: () => Navigator.of(context)
+                  .pushNamed(CurrencySellRequestScreen.routeName),
               leading: Icon(
                 Icons.screen_search_desktop,
                 color: Color.fromRGBO(14, 129, 59, 1),
@@ -130,6 +134,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               ),
             ),
             ListTile(
+              onTap: () =>
+                  Navigator.of(context).pushNamed(SettingsScreen.routeName),
               leading: Icon(
                 Icons.settings,
                 color: Color.fromRGBO(14, 129, 59, 1),
