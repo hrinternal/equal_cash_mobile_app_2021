@@ -1,11 +1,14 @@
+import 'package:equal_cash/models/http_exception.dart';
 import 'package:equal_cash/providers/auth_provider.dart';
 import 'package:equal_cash/screens/create_pin_screen.dart';
+import 'package:equal_cash/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:string_validator/string_validator.dart' as validator;
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String routeName = "registration";
@@ -33,7 +36,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     "email": "",
     "password": "",
     "confirmPassword": "",
-    "terms": ""
+    "terms": false
   };
 
   //PASSWORD VISIBILITY
@@ -46,20 +49,81 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     if (!_formKey.currentState.validate()) {
       return;
     }
+    if (!isTerm) return;
+
     _formKey.currentState.save();
-    CircularProgressIndicator(
-      strokeWidth: 5,
-      semanticsLabel: "Registering ${_firstnameController.text}",
-    );
-    await Provider.of<AuthProvider>(context).register(
-        savedData["country"],
-        savedData["firstname"],
-        savedData["lastname"],
-        savedData["email"],
-        savedData["email"],
-        savedData["password"],
-        savedData["confirmPassword"],
-        savedData["terms"]);
+
+    try {
+      await Provider.of<AuthProvider>(context, listen: false).register(
+          savedData["country"],
+          savedData["firstname"],
+          savedData["lastname"],
+          savedData["email"],
+          savedData["email"],
+          savedData["password"],
+          savedData["confirmPassword"],
+          savedData["terms"]);
+      CircularProgressIndicator(
+        strokeWidth: 5,
+        semanticsLabel: "Registering ${_firstnameController.text}",
+      );
+      //ALERT
+      Alert(
+        style: AlertStyle(
+          animationDuration: Duration(milliseconds: 500),
+          animationType: AnimationType.grow,
+          titleStyle:
+              TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+        ),
+        // desc: error.message,
+
+        title: "Registration successful",
+        context: context,
+
+        content: Text(
+          "A verification link has beign sent to ${_emailController.text}. Please click the link to verify.",
+          style: TextStyle(fontSize: 12),
+        ),
+        type: AlertType.info,
+        image: Icon(
+          Icons.check_circle_outline_rounded,
+          color: Colors.blue[900],
+        ),
+      ).show();
+      Future.delayed(Duration(seconds: 4), () {
+        Navigator.of(context).pushNamed(LoginScreen.routeName);
+      });
+    } on HttpException catch (error) {
+      Alert(
+        style: AlertStyle(
+          animationDuration: Duration(milliseconds: 400),
+          animationType: AnimationType.fromTop,
+          titleStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        ),
+        // desc: error.message,
+        title: "USER EXISTS",
+        context: context,
+        content: Text(error.message),
+        type: AlertType.error,
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Okay",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pop(context),
+            color: Color.fromRGBO(0, 179, 134, 1.0),
+            radius: BorderRadius.circular(0.0),
+          ),
+        ],
+        image: Icon(
+          Icons.info,
+          color: Colors.blue[900],
+        ),
+      ).show();
+    } catch (error) {
+      throw error;
+    }
   }
 
   @override
@@ -248,8 +312,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             textFieldController: _phoneController,
                             formatInput: false,
                             keyboardType: TextInputType.numberWithOptions(
-                              signed: true,
-                            ),
+                                signed: true, decimal: true),
+                            keyboardAction: TextInputAction.next,
                             // inputBorder: OutlineInputBorder(),
                             onSaved: (PhoneNumber number) {
                               print('On Saved: $number');
@@ -275,7 +339,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   password.isEmpty ||
                                   !password.contains(RegExp(r"[a-z]")) ||
                                   !password.contains(RegExp(r"[A-Z]")) ||
-                                  !password.contains(RegExp(r"[0-9]"))) {
+                                  !password.contains(RegExp(r"[0-9]")) ||
+                                  !password.contains(
+                                      RegExp(r'[!@#$%^&*(),.?":{}|<>/]'))) {
                                 return "Please follow the password instructions";
                               } else {
                                 return null;
@@ -288,8 +354,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     fontSize: deviceHeight >= 600 ? 18 : 14),
                                 suffixIcon: IconButton(
                                     icon: Icon(isVisible
-                                        ? Icons.visibility_off
-                                        : Icons.visibility),
+                                        ? Icons.visibility
+                                        : Icons.visibility_off),
                                     onPressed: () {
                                       setState(() {
                                         isVisible = !isVisible;
@@ -301,7 +367,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           ),
                           //PASSWORD
                           TextFormField(
-                            textInputAction: TextInputAction.next,
+                            textInputAction: TextInputAction.done,
                             controller: _confirmPasswordController,
                             onSaved: (cPassword) {
                               savedData["confirmPassword"] = cPassword;
@@ -321,8 +387,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     fontSize: deviceHeight >= 600 ? 18 : 14),
                                 suffixIcon: IconButton(
                                     icon: Icon(isVisible
-                                        ? Icons.visibility_off
-                                        : Icons.visibility),
+                                        ? Icons.visibility
+                                        : Icons.visibility_off),
                                     onPressed: () {
                                       setState(() {
                                         isVisible = !isVisible;
@@ -360,7 +426,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     ),
                                     TextSpan(text: "and "),
                                     TextSpan(
-                                      text: "1 number",
+                                      text: "1 number and at least a character",
                                       style: TextStyle(
                                           color:
                                               Color.fromRGBO(88, 20, 235, 1)),

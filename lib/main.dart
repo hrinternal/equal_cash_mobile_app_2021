@@ -1,3 +1,4 @@
+import 'package:equal_cash/providers/auth_provider.dart';
 import 'package:equal_cash/screens/all_requests.dart';
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
 import 'package:equal_cash/screens/change_password_screen.dart';
@@ -22,6 +23,7 @@ import 'package:equal_cash/screens/splash_screen.dart';
 import 'package:equal_cash/screens/update_profile_screen.dart';
 import 'package:equal_cash/screens/updated_profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,37 +32,41 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-          fontFamily: "Poppins",
-          primaryColor: Color.fromRGBO(14, 129, 59, 1),
-          accentColor: Colors.black,
-          backgroundColor: Colors.white),
-      home: SplashScreen(),
-      routes: {
-        OnboardingScreen.routeName: (_) => OnboardingScreen(),
-        RegistrationScreen.routeName: (_) => RegistrationScreen(),
-        LoginScreen.routeName: (_) => LoginScreen(),
-        CreatePinScreen.routeName: (_) => CreatePinScreen(),
-        ConfirmPinScreen.routeName: (_) => ConfirmPinScreen(),
-        ForgotPasswordScreen.routeName: (_) => ForgotPasswordScreen(),
-        AuthConfirmationScreen.routeName: (_) => AuthConfirmationScreen(),
-        ResetPasswordScreen.routeName: (_) => ResetPasswordScreen(),
-        HomeScreen.routeName: (_) => HomeScreen(),
-        UpdateProfileScreen.routeName: (_) => UpdateProfileScreen(),
-        SaveProfileScreen.routeName: (_) => SaveProfileScreen(),
-        UpdatedProfileScreen.routeName: (_) => UpdatedProfileScreen(),
-        CurrencySellRequestScreen.routeName: (_) => CurrencySellRequestScreen(),
-        SettingsScreen.routeName: (_) => SettingsScreen(),
-        ChangePasswordScreen.routeName: (_) => ChangePasswordScreen(),
-        NotificationScreen.routeName: (_) => NotificationScreen(),
-        ConfirmCurrencyPurchase.routeName: (_) => ConfirmCurrencyPurchase(),
-        CurrencyBuy.routeName: (_) => CurrencyBuy(),
-        MyRequestScreen.routeName: (_) => MyRequestScreen(),
-        AllRequestScreen.routeName: (_) => AllRequestScreen(),
-        PendingTransaction.routeName: (_) => PendingTransaction(),
-        CompletedTransaction.routeName: (_) => CompletedTransaction()
-      },
+    return MultiProvider(
+      providers: [ChangeNotifierProvider.value(value: AuthProvider())],
+      child: MaterialApp(
+        theme: ThemeData(
+            fontFamily: "Poppins",
+            primaryColor: Color.fromRGBO(14, 129, 59, 1),
+            accentColor: Colors.black,
+            backgroundColor: Colors.white),
+        home: SplashScreen(),
+        routes: {
+          OnboardingScreen.routeName: (_) => OnboardingScreen(),
+          RegistrationScreen.routeName: (_) => RegistrationScreen(),
+          LoginScreen.routeName: (_) => LoginScreen(),
+          CreatePinScreen.routeName: (_) => CreatePinScreen(),
+          ConfirmPinScreen.routeName: (_) => ConfirmPinScreen(),
+          ForgotPasswordScreen.routeName: (_) => ForgotPasswordScreen(),
+          AuthConfirmationScreen.routeName: (_) => AuthConfirmationScreen(),
+          ResetPasswordScreen.routeName: (_) => ResetPasswordScreen(),
+          HomeScreen.routeName: (_) => HomeScreen(),
+          UpdateProfileScreen.routeName: (_) => UpdateProfileScreen(),
+          SaveProfileScreen.routeName: (_) => SaveProfileScreen(),
+          UpdatedProfileScreen.routeName: (_) => UpdatedProfileScreen(),
+          CurrencySellRequestScreen.routeName: (_) =>
+              CurrencySellRequestScreen(),
+          SettingsScreen.routeName: (_) => SettingsScreen(),
+          ChangePasswordScreen.routeName: (_) => ChangePasswordScreen(),
+          NotificationScreen.routeName: (_) => NotificationScreen(),
+          ConfirmCurrencyPurchase.routeName: (_) => ConfirmCurrencyPurchase(),
+          CurrencyBuy.routeName: (_) => CurrencyBuy(),
+          MyRequestScreen.routeName: (_) => MyRequestScreen(),
+          AllRequestScreen.routeName: (_) => AllRequestScreen(),
+          PendingTransaction.routeName: (_) => PendingTransaction(),
+          CompletedTransaction.routeName: (_) => CompletedTransaction()
+        },
+      ),
     );
   }
 }
