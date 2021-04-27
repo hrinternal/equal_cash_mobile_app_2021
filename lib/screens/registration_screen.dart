@@ -396,10 +396,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
                               padding: EdgeInsets.symmetric(vertical: 18),
-                              onPressed: () {
-                                Navigator.of(context)
-                                    .pushNamed(CreatePinScreen.routeName);
-                              },
+                              onPressed: _submit,
                               child: Text(
                                 'REGISTER',
                                 style: TextStyle(
