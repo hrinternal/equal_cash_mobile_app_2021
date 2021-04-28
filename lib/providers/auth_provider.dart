@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'package:equal_cash/models/http_exception.dart';
 import 'package:equal_cash/models/response_model.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 
@@ -77,5 +78,26 @@ class AuthProvider with ChangeNotifier {
     } catch (error) {
       throw error;
     }
+  }
+
+  //RESET PASSWORD
+  Future<Void> resetPassword(String email) async {
+    String url =
+        "https://peertopeer.staging.cloudware.ng/api/forgot_password.php";
+
+    try {
+      final response = await http.post(Uri.parse(url), body: {"email": email});
+
+      final responseBody = jsonDecode(response.body);
+
+      if (responseBody["response"]["status"] == 105) {
+        throw HttpException("This user does not exist!!!", 105);
+      }
+
+      print(responseBody);
+    } catch (error) {
+      throw error;
+    }
+    // print(responseBody)
   }
 }
