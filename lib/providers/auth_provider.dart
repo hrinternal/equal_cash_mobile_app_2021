@@ -39,7 +39,7 @@ class AuthProvider with ChangeNotifier {
       final responseMessage = responseData['response']['status'];
 
       if (responseMessage == 105) {
-        throw HttpException("This user already exist!!!");
+        throw HttpException("This user already exist!!!", 105);
       }
 
       print(responseMessage);
@@ -55,13 +55,27 @@ class AuthProvider with ChangeNotifier {
 
   //LOGIN
   Future<void> login(String email, String password) async {
-    final url = "http://peertopeer.staging.cloudware.ng/api/authenticate.php";
+    final url = "https://peertopeer.staging.cloudware.ng/api/authenticate.php";
     try {
       final response = await http
           .post(Uri.parse(url), body: {"email": email, "password": password});
       final responseBody = jsonDecode(response.body);
+
+      int status = responseBody['response']['status'];
+      print(status);
+
+      if (responseBody['response']['status'] == 105) {
+        throw HttpException("Incorrect email or password", 105);
+      } else if (responseBody['response']['status'] == 107) {
+        throw HttpException(
+            "Your account has not been activated, please check your mail for the confirmation message.",
+            107);
+      }
+
       print(response);
       print(responseBody);
-    } catch (error) {}
+    } catch (error) {
+      throw error;
+    }
   }
 }

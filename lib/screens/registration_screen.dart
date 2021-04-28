@@ -45,6 +45,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   //TERMS
   bool isTerm = false;
 
+  //LOADING
+  bool _isLoading = false;
+
   Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
       return;
@@ -52,6 +55,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     if (!isTerm) return;
 
     _formKey.currentState.save();
+    setState(() {
+      _isLoading = true;
+    });
 
     try {
       await Provider.of<AuthProvider>(context, listen: false).register(
@@ -63,15 +69,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           savedData["password"],
           savedData["confirmPassword"],
           savedData["terms"]);
-      CircularProgressIndicator(
-        strokeWidth: 5,
-        semanticsLabel: "Registering ${_firstnameController.text}",
-      );
+
       //ALERT
       Alert(
         style: AlertStyle(
           animationDuration: Duration(milliseconds: 500),
-          animationType: AnimationType.grow,
+          animationType: AnimationType.fromTop,
           titleStyle:
               TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
         ),
@@ -82,7 +85,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
         content: Text(
           "A verification link has beign sent to ${_emailController.text}. Please click the link to verify.",
-          style: TextStyle(fontSize: 12),
+          style: TextStyle(fontSize: 14),
         ),
         type: AlertType.info,
         image: Icon(
@@ -90,20 +93,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           color: Colors.blue[900],
         ),
       ).show();
-      Future.delayed(Duration(seconds: 4), () {
+      Future.delayed(Duration(seconds: 5), () {
         Navigator.of(context).pushNamed(LoginScreen.routeName);
       });
     } on HttpException catch (error) {
       Alert(
         style: AlertStyle(
-          animationDuration: Duration(milliseconds: 400),
+          animationDuration: Duration(milliseconds: 500),
           animationType: AnimationType.fromTop,
           titleStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
         ),
         // desc: error.message,
         title: "USER EXISTS",
         context: context,
-        content: Text(error.message),
+        content: Text(
+          error.message,
+          style: TextStyle(fontSize: 14),
+          textAlign: TextAlign.center,
+        ),
         type: AlertType.error,
         buttons: [
           DialogButton(
@@ -121,9 +128,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           color: Colors.blue[900],
         ),
       ).show();
+      setState(() {
+        _isLoading = false;
+      });
     } catch (error) {
       throw error;
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -463,13 +476,39 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   borderRadius: BorderRadius.circular(10)),
                               padding: EdgeInsets.symmetric(vertical: 18),
                               onPressed: _submit,
-                              child: Text(
-                                'REGISTER',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: deviceHeight >= 600 ? 16 : 14),
-                              ),
+                              child: _isLoading
+                                  ? Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 3,
+                                          child: Center(
+                                            child: Text(
+                                              "Please wait!!!",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                            margin: EdgeInsets.only(right: 20),
+                                            height: 15,
+                                            width: 15,
+                                            child: CircularProgressIndicator(
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      Colors.white),
+                                            ))
+                                      ],
+                                    )
+                                  : Text(
+                                      'REGISTER',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
