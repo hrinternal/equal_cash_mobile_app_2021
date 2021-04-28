@@ -1,5 +1,6 @@
 import 'package:equal_cash/screens/all_requests.dart';
 import 'package:equal_cash/screens/completed_transactions.dart';
+import 'package:equal_cash/screens/login_screen.dart';
 import 'package:equal_cash/screens/my_request_screen.dart';
 import 'package:equal_cash/screens/pending_transactions.dart';
 import 'package:equal_cash/screens/settings_screen.dart';
@@ -112,6 +113,10 @@ class _AppDrawerWidgetState extends State<AppDrawerWidget> {
             thickness: 1,
           ),
           ListTile(
+            onTap: () => Navigator.of(context)
+                .pushReplacement(MaterialPageRoute(builder: (_) {
+              return LoginScreen();
+            })),
             leading: Icon(
               Icons.logout,
               color: Theme.of(context).primaryColor,

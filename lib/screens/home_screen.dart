@@ -5,6 +5,7 @@ import 'package:equal_cash/widgets/home_widget.dart';
 import 'package:equal_cash/widgets/profile_widget.dart';
 import 'package:equal_cash/widgets/currency_sell_widget.dart';
 import "package:flutter/material.dart";
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = "home";

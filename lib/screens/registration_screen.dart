@@ -34,9 +34,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     "firstname": "",
     "lastname": "",
     "email": "",
+    "phonenumber": "",
     "password": "",
     "confirmPassword": "",
-    "terms": false
+    "terms": false,
   };
 
   //PASSWORD VISIBILITY
@@ -65,7 +66,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           savedData["firstname"],
           savedData["lastname"],
           savedData["email"],
-          savedData["email"],
+          savedData["phonenumber"],
           savedData["password"],
           savedData["confirmPassword"],
           savedData["terms"]);
@@ -331,8 +332,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             onSaved: (PhoneNumber number) {
                               print('On Saved: $number');
                               setState(() {
-                                savedData["confirmPassword"] =
-                                    number.toString();
+                                savedData["phonenumber"] = number.toString();
                               });
                             },
                           ),

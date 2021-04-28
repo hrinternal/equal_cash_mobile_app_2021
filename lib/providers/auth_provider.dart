@@ -5,8 +5,11 @@ import 'package:equal_cash/models/response_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
+  String userId;
+
   //REGISTER
   Future<Void> register(
       String country,
@@ -73,6 +76,17 @@ class AuthProvider with ChangeNotifier {
             107);
       }
 
+      Map<dynamic, dynamic> data = responseBody['response']['data'];
+      String userId = data["unique_id"];
+      String fullname = data["fullname"];
+
+      SharedPreferences saveUserId = await SharedPreferences.getInstance();
+      await saveUserId.setString("userId", userId);
+      await saveUserId.setString("fullname", fullname);
+
+      print(fullname);
+      print("RESPONSE DATA $data");
+      print("USER ID $userId");
       print(response);
       print(responseBody);
     } catch (error) {
@@ -81,12 +95,14 @@ class AuthProvider with ChangeNotifier {
   }
 
   //RESET PASSWORD
-  Future<Void> resetPassword(String email) async {
+  Future<void> resetPassword(String email) async {
     String url =
         "https://peertopeer.staging.cloudware.ng/api/forgot_password.php";
 
     try {
-      final response = await http.post(Uri.parse(url), body: {"email": email});
+      final response = await http.post(Uri.parse(url), body: {
+        "email": email,
+      });
 
       final responseBody = jsonDecode(response.body);
 
@@ -99,5 +115,35 @@ class AuthProvider with ChangeNotifier {
       throw error;
     }
     // print(responseBody)
+  }
+
+  String get getUserId {
+    return userId;
+  }
+
+  //CREATE PASSWORD
+  Future<void> createNewPassword(String oldPassword, String newPassword,
+      String confirmPassword, String userId) async {
+    final url =
+        "https://peertopeer.staging.cloudware.ng/api/change_password.php";
+    try {
+      final response = await http.post(Uri.parse(url), body: {
+        "password": newPassword,
+        "confirm_password": confirmPassword,
+        "old_password": oldPassword,
+        "user_id": userId
+      });
+
+      final responseBody = jsonDecode(response.body);
+
+      if (responseBody['response']['status'] == 106) {
+        throw HttpException(
+            'The old password is incorrect. Please try again!!!', 106);
+      }
+
+      print("RESPONSE BODY $responseBody");
+    } catch (error) {
+      throw error;
+    }
   }
 }

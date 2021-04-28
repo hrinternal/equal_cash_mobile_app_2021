@@ -1,6 +1,8 @@
 import 'package:equal_cash/models/http_exception.dart';
 import 'package:equal_cash/providers/auth_provider.dart';
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
+import 'package:equal_cash/screens/login_screen.dart';
+import 'package:equal_cash/screens/reset_forgot_password.dart';
 import 'package:equal_cash/screens/reset_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
@@ -51,22 +53,24 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       fontWeight: FontWeight.bold, color: Colors.green[900]),
                 ),
                 content: RichText(
-                    text: TextSpan(children: [
-                  TextSpan(
-                    text: 'A reset password link has been sent to ',
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                  ),
-                  TextSpan(
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: 'A reset password link has been sent to ',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                    TextSpan(
                       text: savedData['email'],
                       style: TextStyle(
                         color: Colors.red[900],
                         fontStyle: FontStyle.italic,
                         fontWeight: FontWeight.bold,
-                      ))
-                ]))
+                      ),
+                    ),
+                  ]),
+                )
 
                 // Text(
                 //   "A reset password link has been sent to ${savedData['email']}",
@@ -78,8 +82,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 );
           });
 
-      Future.delayed(Duration(seconds: 4), () {
-        Navigator.of(context).pushNamed(ResetPasswordScreen.routeName);
+      Future.delayed(Duration(seconds: 5), () {
+        Navigator.of(context).pushNamed(LoginScreen.routeName);
       });
     } on HttpException catch (error) {
       Alert(

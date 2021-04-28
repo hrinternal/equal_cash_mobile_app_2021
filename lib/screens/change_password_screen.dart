@@ -1,5 +1,11 @@
+import 'package:equal_cash/models/http_exception.dart';
+import 'package:equal_cash/providers/auth_provider.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:string_validator/string_validator.dart' as validator;
 
 class ChangePasswordScreen extends StatefulWidget {
   static const routeName = "change-password";
@@ -11,6 +17,124 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final _oldPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  bool isVisible = false;
+
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  Map passwords = {"oldPassword": "", "newPassword": "", "confirmPassword": ""};
+  bool _isLoading = false;
+
+  bool _isEight;
+  bool _isUpperCase;
+  bool _isSpecialChar;
+  bool _isNumber;
+
+  @override
+  void initState() {
+    super.initState();
+    _isEight = false;
+    _isUpperCase = false;
+    _isSpecialChar = false;
+    _isNumber = false;
+  }
+
+  Future _submit() async {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+
+    _formKey.currentState.save();
+    setState(() {
+      _isLoading = true;
+    });
+    SharedPreferences getUserId = await SharedPreferences.getInstance();
+    print("GET ID ${getUserId.getString('userId')}");
+    try {
+      await Provider.of<AuthProvider>(context, listen: false).createNewPassword(
+          passwords['oldPassword'],
+          passwords['newPassword'],
+          passwords['confirmPassword'],
+          getUserId.getString("userId"));
+
+      Alert(
+        style: AlertStyle(
+          animationDuration: Duration(milliseconds: 500),
+          animationType: AnimationType.fromTop,
+          titleStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        ),
+        // desc: error.message,
+        title: "Password changed",
+        context: context,
+        content: Text(
+          "Your password has being changed successfully",
+          style: TextStyle(fontSize: 14),
+          textAlign: TextAlign.center,
+        ),
+        type: AlertType.success,
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Okay",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pop(context),
+            color: Color.fromRGBO(0, 179, 134, 1.0),
+            radius: BorderRadius.circular(0.0),
+          ),
+        ],
+        image: Icon(
+          Icons.check_circle_outline,
+          color: Colors.green[900],
+        ),
+      ).show();
+
+      Future.delayed(Duration(seconds: 3), () {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) {
+          return HomeScreen();
+        }));
+      });
+    } on HttpException catch (error) {
+      Alert(
+        style: AlertStyle(
+          animationDuration: Duration(milliseconds: 500),
+          animationType: AnimationType.fromTop,
+          titleStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        ),
+        // desc: error.message,
+        title: "Incorrect Old Password",
+        context: context,
+        content: Text(
+          error.message,
+          style: TextStyle(fontSize: 14),
+          textAlign: TextAlign.center,
+        ),
+        type: AlertType.error,
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Okay",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pop(context),
+            color: Color.fromRGBO(0, 179, 134, 1.0),
+            radius: BorderRadius.circular(0.0),
+          ),
+        ],
+        image: Icon(
+          Icons.info,
+          color: Colors.blue[900],
+        ),
+      ).show();
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (error) {
+      throw error;
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +162,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   alignment: Alignment.centerLeft,
                   // padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
-                    "Choose a password that meats the criteria listed below",
+                    "Choose a password that meets the criteria listed below",
                     style: TextStyle(
                         // fontWeight: FontWeight.bold,
                         color: Colors.black,
@@ -49,27 +173,39 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   height: 30,
                 ),
                 Form(
+                  key: _formKey,
                   child: Column(
                     children: [
                       Container(
                         // padding: EdgeInsets.symmetric(horizontal: 13),
                         child: TextFormField(
-                          autofocus: true,
+                          textInputAction: TextInputAction.next,
                           controller: _oldPasswordController,
+                          onSaved: (password) {
+                            passwords["oldPassword"] = password;
+                          },
+                          validator: (password) {
+                            //  if(isLength())
+                            if (password.isEmpty) {
+                              return "Please enter your password";
+                            } else {
+                              return null;
+                            }
+                          },
+                          obscureText: isVisible,
                           decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.visibility_off,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            hintText: "Old password",
-                            focusedBorder: OutlineInputBorder(),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                            ),
-                          ),
+                              border: OutlineInputBorder(),
+                              labelText: "Old Password",
+                              labelStyle: TextStyle(fontSize: 18),
+                              suffixIcon: IconButton(
+                                  icon: Icon(isVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off),
+                                  onPressed: () {
+                                    setState(() {
+                                      isVisible = !isVisible;
+                                    });
+                                  })),
                         ),
                       ),
                       SizedBox(
@@ -78,22 +214,72 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       Container(
                         // padding: EdgeInsets.symmetric(horizontal: 13),
                         child: TextFormField(
-                          autofocus: true,
+                          textInputAction: TextInputAction.next,
                           controller: _newPasswordController,
+                          onSaved: (password) {
+                            passwords["newPassword"] = password;
+                          },
+                          onChanged: (password) {
+                            print(password);
+                            print("LENGTH ${password.length}");
+                            setState(() {
+                              //LENGTH
+                              if (password.length >= 8) {
+                                _isEight = true;
+                              }
+                              if (password.length < 8) {
+                                _isEight = false;
+                              }
+                              if (password.contains(RegExp(r"[A-Z]"))) {
+                                _isUpperCase = true;
+                              }
+                              if (!password.contains(RegExp(r"[A-Z]"))) {
+                                _isUpperCase = false;
+                              }
+                              if (password.contains(RegExp(r"[0-9]"))) {
+                                _isNumber = true;
+                              }
+                              if (!password.contains(RegExp(r"[0-9]"))) {
+                                _isNumber = false;
+                              }
+                              if (password.contains(
+                                  RegExp(r'[!@#$%^&*(),.?":{}|<>/]'))) {
+                                _isSpecialChar = true;
+                              }
+                              if (!password.contains(
+                                  RegExp(r'[!@#$%^&*(),.?":{}|<>/]'))) {
+                                _isSpecialChar = false;
+                              }
+                            });
+                          },
+                          validator: (password) {
+                            //  if(isLength())
+                            if (password.length < 8 ||
+                                password.isEmpty ||
+                                !password.contains(RegExp(r"[a-z]")) ||
+                                !password.contains(RegExp(r"[A-Z]")) ||
+                                !password.contains(RegExp(r"[0-9]")) ||
+                                !password.contains(
+                                    RegExp(r'[!@#$%^&*(),?":{}|<>/]'))) {
+                              return "Please follow the password instructions";
+                            } else {
+                              return null;
+                            }
+                          },
+                          obscureText: isVisible,
                           decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.visibility_off,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            hintText: "New password",
-                            focusedBorder: OutlineInputBorder(),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                            ),
-                          ),
+                              border: OutlineInputBorder(),
+                              labelText: "New Password",
+                              labelStyle: TextStyle(fontSize: 18),
+                              suffixIcon: IconButton(
+                                  icon: Icon(isVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off),
+                                  onPressed: () {
+                                    setState(() {
+                                      isVisible = !isVisible;
+                                    });
+                                  })),
                         ),
                       ),
                       SizedBox(
@@ -103,10 +289,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         // margin: EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Icon(
-                              Icons.cancel_outlined,
-                              color: Colors.red[600],
-                            ),
+                            _isEight
+                                ? Icon(
+                                    Icons.check_circle_outline_rounded,
+                                    color: Colors.green[600],
+                                  )
+                                : Icon(
+                                    Icons.cancel_outlined,
+                                    color: Colors.red[600],
+                                  ),
                             Text(" at least 8 characters")
                           ],
                         ),
@@ -118,10 +309,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         // margin: EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Icon(
-                              Icons.cancel_outlined,
-                              color: Colors.red[600],
-                            ),
+                            _isUpperCase
+                                ? Icon(
+                                    Icons.check_circle_outline_rounded,
+                                    color: Colors.green[600],
+                                  )
+                                : Icon(
+                                    Icons.cancel_outlined,
+                                    color: Colors.red[600],
+                                  ),
                             Text(" uppercase character")
                           ],
                         ),
@@ -133,11 +329,36 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         // margin: EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            Icon(
-                              Icons.cancel_outlined,
-                              color: Colors.red[600],
-                            ),
+                            _isSpecialChar
+                                ? Icon(
+                                    Icons.check_circle_outline_rounded,
+                                    color: Colors.green[600],
+                                  )
+                                : Icon(
+                                    Icons.cancel_outlined,
+                                    color: Colors.red[600],
+                                  ),
                             Text(" at least 1 special character")
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        // margin: EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            _isNumber
+                                ? Icon(
+                                    Icons.check_circle_outline_rounded,
+                                    color: Colors.green[600],
+                                  )
+                                : Icon(
+                                    Icons.cancel_outlined,
+                                    color: Colors.red[600],
+                                  ),
+                            Text(" at least 1 number")
                           ],
                         ),
                       ),
@@ -147,22 +368,33 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       Container(
                         // padding: EdgeInsets.symmetric(horizontal: 13),
                         child: TextFormField(
-                          autofocus: true,
+                          textInputAction: TextInputAction.done,
                           controller: _confirmPasswordController,
+                          onSaved: (cPassword) {
+                            passwords["confirmPassword"] = cPassword;
+                          },
+                          validator: (cPassword) {
+                            //  if(isLength())
+                            if (cPassword != _newPasswordController.text) {
+                              return "Password does not match";
+                            } else {
+                              return null;
+                            }
+                          },
+                          obscureText: isVisible,
                           decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.visibility_off,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            hintText: "Confirm password",
-                            focusedBorder: OutlineInputBorder(),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                            ),
-                          ),
+                              border: OutlineInputBorder(),
+                              labelText: "Confirm password",
+                              labelStyle: TextStyle(fontSize: 18),
+                              suffixIcon: IconButton(
+                                  icon: Icon(isVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off),
+                                  onPressed: () {
+                                    setState(() {
+                                      isVisible = !isVisible;
+                                    });
+                                  })),
                         ),
                       ),
                       SizedBox(
@@ -173,19 +405,42 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         // margin: EdgeInsets.symmetric(horizontal: 6),
                         child: FlatButton(
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4)),
-                          padding: EdgeInsets.symmetric(vertical: 13),
-                          onPressed: () {
-                            // Navigator.of(context)
-                            //     .pushNamed(Chan.routeName);
-                          },
-                          child: Text(
-                            'Change password',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16),
-                          ),
+                              borderRadius: BorderRadius.circular(10)),
+                          padding: EdgeInsets.symmetric(vertical: 18),
+                          onPressed: _submit,
+                          child: _isLoading
+                              ? Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Center(
+                                        child: Text(
+                                          "Please wait!!!",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                        margin: EdgeInsets.only(right: 20),
+                                        height: 15,
+                                        width: 15,
+                                        child: CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.white),
+                                        ))
+                                  ],
+                                )
+                              : Text(
+                                  'Change password',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                ),
                           color: Theme.of(context).primaryColor,
                         ),
                       ),

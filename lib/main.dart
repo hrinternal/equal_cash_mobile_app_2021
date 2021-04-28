@@ -16,6 +16,7 @@ import 'package:equal_cash/screens/notification_screen.dart';
 import 'package:equal_cash/screens/onboarding_screen.dart';
 import 'package:equal_cash/screens/pending_transactions.dart';
 import 'package:equal_cash/screens/registration_screen.dart';
+import 'package:equal_cash/screens/reset_forgot_password.dart';
 import 'package:equal_cash/screens/reset_password_screen.dart';
 import 'package:equal_cash/screens/save_profile_screen.dart';
 import 'package:equal_cash/screens/settings_screen.dart';
@@ -64,7 +65,9 @@ class MyApp extends StatelessWidget {
           MyRequestScreen.routeName: (_) => MyRequestScreen(),
           AllRequestScreen.routeName: (_) => AllRequestScreen(),
           PendingTransaction.routeName: (_) => PendingTransaction(),
-          CompletedTransaction.routeName: (_) => CompletedTransaction()
+          CompletedTransaction.routeName: (_) => CompletedTransaction(),
+          ResetForgotPasswordScreen.routeName: (_) =>
+              ResetForgotPasswordScreen(),
         },
       ),
     );

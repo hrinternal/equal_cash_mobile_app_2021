@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:equal_cash/models/home_pager_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeWidget extends StatefulWidget {
   @override
@@ -8,10 +9,19 @@ class HomeWidget extends StatefulWidget {
 
 class _HomeWidgetState extends State<HomeWidget> {
   int currentPage = 0;
+  String fullname;
+  void username() async {
+    SharedPreferences username = await SharedPreferences.getInstance();
+    setState(() {
+      fullname = username.getString("fullname");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
+    username();
 
     return SingleChildScrollView(
       child: Container(
@@ -22,7 +32,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               children: [
                 ListTile(
                   title: Text(
-                    "Welcome, Mia",
+                    "Welcome, $fullname",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
