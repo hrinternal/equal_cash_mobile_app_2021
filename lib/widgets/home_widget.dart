@@ -27,8 +27,8 @@ class _HomeWidgetState extends State<HomeWidget> {
     final deviceWidth = MediaQuery.of(context).size.width;
 
     final activities =
-        Provider.of<RecentActivitiesProvider>(context, listen: false)
-            .recentActivitiesLimit();
+        Provider.of<RecentActivitiesProvider>(context, listen: false);
+
     print("MY RECENT ACT $recentLimitActivities");
     List actList = recentLimitActivities['data'];
 
@@ -184,36 +184,72 @@ class _HomeWidgetState extends State<HomeWidget> {
               child: Container(
                 height: 176,
                 // color: Colors.amber,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: actList.length,
-                  itemBuilder: (_, index) {
-                    return recentLimitActivities.isEmpty
-                        ? CircularProgressIndicator()
-                        : ListTile(
-                            leading: Icon(
-                              Icons.local_activity_rounded,
-                              color: Colors.black,
+
+                child: FutureBuilder(
+                  future: activities.recentActivitiesLimit(),
+                  // initialData: InitialData,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Container(
+                        alignment: Alignment.center,
+                        // color: Colors.amber,
+                        height: MediaQuery.of(context).size.height * 0.4,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(
+                              strokeWidth: 5,
                             ),
-                            title: Text(
-                              actList[index]['description'],
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "Loading Recent Activities",
                               style: TextStyle(
-                                  fontSize: deviceHeight < 700 ? 15 : 17,
-                                  color: Color.fromRGBO(14, 129, 59, 1),
+                                  color: Colors.blue[900],
+                                  fontStyle: FontStyle.italic,
                                   fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Text(
-                              "Your last login was",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            trailing: Text(
-                              actList[index]['date_created'],
-                              style: TextStyle(
-                                  color: Color.fromRGBO(121, 128, 235, 1),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          );
+                            )
+                          ],
+                        ),
+                      );
+                    } else {}
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: activities.getRecentLimitCount,
+                      itemBuilder: (_, index) {
+                        return recentLimitActivities.isEmpty
+                            ? CircularProgressIndicator()
+                            : ListTile(
+                                leading: Icon(
+                                  Icons.local_activity_rounded,
+                                  color: Colors.black,
+                                ),
+                                title: Text(
+                                  activities.getRecentLimit[index]
+                                      ['description'],
+                                  style: TextStyle(
+                                      fontSize: deviceHeight < 700 ? 15 : 17,
+                                      color: Color.fromRGBO(14, 129, 59, 1),
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text(
+                                  "Your last activity was at",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12),
+                                ),
+                                trailing: Text(
+                                  activities.getRecentLimit[index]
+                                      ['date_created'],
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(121, 128, 235, 1),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              );
+                      },
+                    );
                   },
                 ),
               ),

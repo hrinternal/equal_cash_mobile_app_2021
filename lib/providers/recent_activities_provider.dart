@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:equal_cash/models/response_model.dart';
@@ -6,6 +7,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RecentActivitiesProvider with ChangeNotifier {
+  List _recentLimit = [];
+// <HashMap<String, dynamic>>
+  List get getRecentLimit {
+    return [..._recentLimit];
+  }
+
+  int get getRecentLimitCount {
+    return _recentLimit.length;
+  }
+
   Future recentActivitiesLimit() async {
     SharedPreferences savedId = await SharedPreferences.getInstance();
 
@@ -21,6 +32,10 @@ class RecentActivitiesProvider with ChangeNotifier {
     final responseBody = jsonDecode(response.body);
     print("RESPONSE BODY $responseBody");
     print("RESPONSE Distinct ${responseBody['response']}");
+
+    // _recentLimit.asMap(responseBody['response'])
+    _recentLimit.addAll(responseBody['response']['data']);
+    print("RECENT LIMIT $_recentLimit");
 
     recentLimitActivities.addAll(responseBody['response']);
 

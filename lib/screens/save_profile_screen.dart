@@ -1,7 +1,14 @@
+// import 'dart:html';
+
+import 'dart:io';
+
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:equal_cash/screens/update_profile_screen.dart';
 import 'package:equal_cash/screens/updated_profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 class SaveProfileScreen extends StatefulWidget {
   static const routeName = "save-profile";
@@ -13,6 +20,22 @@ enum Gender { Male, Female }
 
 class _SaveProfileScreenState extends State<SaveProfileScreen> {
   Gender _gender = Gender.Male;
+
+  File _image;
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,14 +75,24 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
                     child: Container(
                       height: 80,
                       width: 80,
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: InkWell(
-                          child: Image.asset(
-                            "assets/images/person.jpg",
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                            splashColor: Colors.white,
+                            onTap: getImage,
+                            child: _image == null
+                                ? Icon(
+                                    Icons.person,
+                                    size: 30,
+                                  )
+                                : Image.file(
+                                    _image,
+                                    fit: BoxFit.cover,
+                                  )),
                       ),
                     ),
                   ),

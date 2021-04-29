@@ -146,4 +146,27 @@ class AuthProvider with ChangeNotifier {
       throw error;
     }
   }
+
+  //UPDATE PROFILE
+  Future<void> updateProfile(
+    String address,
+    String gender,
+  ) async {
+    final url =
+        "https://peertopeer.staging.cloudware.ng/api/update_profile.php";
+
+    final response = await http.post(Uri.parse(url), body: {
+      "gender": gender,
+      "user_id": userId,
+    });
+
+    final responseBody = jsonDecode(response.body);
+
+    // if (responseBody['response']['status'] == 106) {
+    //   throw HttpException(
+    //       'The old password is incorrect. Please try again!!!', 106);
+    // }
+
+    print("RESPONSE BODY $responseBody");
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:equal_cash/screens/currency_sell_request_screen.dart';
+import 'package:equal_cash/screens/save_profile_screen.dart';
 import 'package:equal_cash/screens/settings_screen.dart';
 import 'package:equal_cash/screens/update_profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             ),
             InkWell(
               onTap: () {
-                Navigator.of(context).pushNamed(UpdateProfileScreen.routeName);
+                Navigator.of(context).pushNamed(SaveProfileScreen.routeName);
               },
               child: Container(
                 decoration: BoxDecoration(
