@@ -1,4 +1,5 @@
 import 'package:equal_cash/providers/auth_provider.dart';
+import 'package:equal_cash/providers/recent_activities_provider.dart';
 import 'package:equal_cash/screens/all_requests.dart';
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
 import 'package:equal_cash/screens/change_password_screen.dart';
@@ -34,12 +35,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider.value(value: AuthProvider())],
+      providers: [
+        ChangeNotifierProvider.value(value: AuthProvider()),
+        // ChangeNotifierProvider.value(value: RecentActivitiesProvider())
+        ChangeNotifierProvider(
+          create: (_) => RecentActivitiesProvider(),
+        )
+      ],
       child: MaterialApp(
         theme: ThemeData(
             fontFamily: "Poppins",
             primaryColor: Color.fromRGBO(14, 129, 59, 1),
-            accentColor: Colors.black,
+            accentColor: Color.fromRGBO(68, 51, 255, 1),
             backgroundColor: Colors.white),
         home: SplashScreen(),
         routes: {

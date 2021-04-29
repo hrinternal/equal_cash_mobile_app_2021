@@ -1,6 +1,9 @@
+import 'package:equal_cash/models/response_model.dart';
+import 'package:equal_cash/providers/recent_activities_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:equal_cash/models/home_pager_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class HomeWidget extends StatefulWidget {
   @override
@@ -10,18 +13,29 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
   int currentPage = 0;
   String fullname;
-  void username() async {
+  Future<String> username() async {
     SharedPreferences username = await SharedPreferences.getInstance();
-    setState(() {
-      fullname = username.getString("fullname");
-    });
+
+    fullname = username.getString("fullname");
+
+    return fullname;
   }
 
   @override
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
-    username();
+
+    final activities =
+        Provider.of<RecentActivitiesProvider>(context, listen: false)
+            .recentActivitiesLimit();
+    print("MY RECENT ACT $recentLimitActivities");
+    List actList = recentLimitActivities['data'];
+
+    print("ACT LIST $actList}");
+
+    // final activitiesAll =
+    //     Provider.of<RecentActivitiesProvider>(context).recentActivities();
 
     return SingleChildScrollView(
       child: Container(
@@ -31,13 +45,21 @@ class _HomeWidgetState extends State<HomeWidget> {
             Column(
               children: [
                 ListTile(
-                  title: Text(
-                    "Welcome, $fullname",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontSize: 20),
+                  title: FutureBuilder(
+                    future: username(),
+                    // initialData: InitialData,
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      return Text(
+                        "Welcome, ${snapshot.data}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 20),
+                      );
+                    },
                   ),
+
+                  // title:
                   subtitle: Text(
                     "You're ready to use Equal Cash",
                     style: TextStyle(
@@ -162,86 +184,37 @@ class _HomeWidgetState extends State<HomeWidget> {
               child: Container(
                 height: 176,
                 // color: Colors.amber,
-                child: ListView(
-                  children: [
-                    ListTile(
-                      leading: Icon(
-                        Icons.person_add_outlined,
-                        color: Colors.black,
-                      ),
-                      title: Text(
-                        "Created an account",
-                        style: TextStyle(
-                            fontSize: deviceHeight < 700 ? 15 : 17,
-                            color: Color.fromRGBO(14, 129, 59, 1),
-                            fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(
-                        "You created an equal Cash account",
-                        style:
-                            TextStyle(fontSize: deviceHeight < 700 ? 11 : 13),
-                      ),
-                      trailing: Text(
-                        "12, Feb",
-                        style: TextStyle(
-                          color: Color.fromRGBO(121, 128, 235, 1),
-                          fontSize: deviceHeight < 700 ? 11 : 13,
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                      leading: Icon(
-                        Icons.edit_outlined,
-                        color: Colors.black,
-                      ),
-                      title: Text(
-                        "Updated your profile",
-                        style: TextStyle(
-                            fontSize: deviceHeight < 700 ? 15 : 17,
-                            color: Color.fromRGBO(14, 129, 59, 1),
-                            fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(
-                        "Profile is now 100% complete",
-                        style:
-                            TextStyle(fontSize: deviceHeight < 700 ? 11 : 13),
-                      ),
-                      trailing: Text(
-                        "14, Feb",
-                        style: TextStyle(
-                          color: Color.fromRGBO(121, 128, 235, 1),
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                    deviceHeight >= 700
-                        ? ListTile(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: actList.length,
+                  itemBuilder: (_, index) {
+                    return recentLimitActivities.isEmpty
+                        ? CircularProgressIndicator()
+                        : ListTile(
                             leading: Icon(
-                              Icons.send_outlined,
+                              Icons.local_activity_rounded,
                               color: Colors.black,
                             ),
                             title: Text(
-                              "Sell request",
+                              actList[index]['description'],
                               style: TextStyle(
-                                  fontSize: deviceHeight < 600 ? 13 : 16,
+                                  fontSize: deviceHeight < 700 ? 15 : 17,
                                   color: Color.fromRGBO(14, 129, 59, 1),
                                   fontWeight: FontWeight.bold),
                             ),
                             subtitle: Text(
-                              "You created a sell request - \$100 USD",
-                              style: TextStyle(
-                                  fontSize: deviceHeight < 700 ? 11 : 13),
+                              "Your last login was",
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             trailing: Text(
-                              "12, Feb",
+                              actList[index]['date_created'],
                               style: TextStyle(
-                                color: Color.fromRGBO(121, 128, 235, 1),
-                                fontSize: 13,
-                              ),
+                                  color: Color.fromRGBO(121, 128, 235, 1),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold),
                             ),
-                          )
-                        : SizedBox(),
-                  ],
+                          );
+                  },
                 ),
               ),
             )
