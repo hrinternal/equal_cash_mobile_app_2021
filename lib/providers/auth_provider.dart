@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:io';
 import 'package:equal_cash/models/http_exception.dart';
 import 'package:equal_cash/models/response_model.dart';
 import 'package:flutter/material.dart';
@@ -148,25 +149,60 @@ class AuthProvider with ChangeNotifier {
   }
 
   //UPDATE PROFILE
-  Future<void> updateProfile(
-    String address,
-    String gender,
-  ) async {
+  Future<void> updateProfile(String address, String gender) async {
     final url =
         "https://peertopeer.staging.cloudware.ng/api/update_profile.php";
 
-    final response = await http.post(Uri.parse(url), body: {
-      "gender": gender,
-      "user_id": userId,
-    });
+    SharedPreferences myId = await SharedPreferences.getInstance();
+    String myIdee = myId.getString("userId");
+
+    print("IDEE $myIdee");
+
+// //pics.toString()
+    //POST FOR GENDER AND ADDRESS
+    final response = await http.post(Uri.parse(url),
+        body: {"gender": gender, "user_id": myIdee, "address": address});
+
+    // final picRes = jsonDecode(picResponse.body);
 
     final responseBody = jsonDecode(response.body);
+
+    print("STATUS CODE ${response.statusCode}");
+
+    // if (picRes['response']['status'] == 107) {
+    //   throw HttpException(picRes['response']['message'], 107);
+    // }
 
     // if (responseBody['response']['status'] == 106) {
     //   throw HttpException(
     //       'The old password is incorrect. Please try again!!!', 106);
     // }
+    // print("PIC RESPONSE $picRes");
+    print("RESPONSE BODY ADDRESS $responseBody");
+    // }
+    // catch (error) {
+    //   throw error;
+    // }
+  }
 
-    print("RESPONSE BODY $responseBody");
+  Future<void> uploadImage(File pic) async {
+    SharedPreferences myId = await SharedPreferences.getInstance();
+    String myIdee = myId.getString("userId");
+
+    print("IDEE $myIdee");
+
+    final urlPic =
+        "https://peertopeer.staging.cloudware.ng/api/upload_profile_pic.php";
+
+    // final picResponse = await http.post(Uri.parse(urlPic),
+    //     body: jsonEncode(
+    //         {"user_id": myIdee, "file": base64Encode(pic.readAsBytesSync())}));
+
+    // final resBody = jsonDecode(picResponse.body);
+
+    // print("PIC RESPONSE BODY $resBody");
+    // print("PRINT STATUS CODE ${picResponse.statusCode}");
+
+    // print("PIC RESPONSE $picResponse");
   }
 }

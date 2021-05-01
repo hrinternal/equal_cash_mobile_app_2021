@@ -1,14 +1,26 @@
 // import 'dart:html';
 
+// import 'dart:html';
+import 'dart:convert';
 import 'dart:io';
+// import 'dart:js';
 
+import 'package:path/path.dart' as path;
+import 'package:async/async.dart';
+// import 'dart:io';
+import 'package:http/http.dart' as http;
+
+import 'package:equal_cash/models/http_exception.dart';
+import 'package:equal_cash/providers/auth_provider.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:equal_cash/screens/update_profile_screen.dart';
 import 'package:equal_cash/screens/updated_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:path/path.dart';
+// import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 class SaveProfileScreen extends StatefulWidget {
   static const routeName = "save-profile";
@@ -21,8 +33,11 @@ enum Gender { Male, Female }
 class _SaveProfileScreenState extends State<SaveProfileScreen> {
   Gender _gender = Gender.Male;
 
+  final _emailController = TextEditingController();
+
   File _image;
   final picker = ImagePicker();
+  bool _isUploaded = false;
 
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
@@ -33,6 +48,100 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
       } else {
         print('No image selected.');
       }
+    });
+  }
+
+  bool isAddress = false;
+  bool isImage = false;
+
+  Future<void> _uploadImage() async {
+    if (_image == null) {
+      setState(() {
+        isImage = true;
+      });
+      return;
+    }
+
+    setState(() {
+      _isUploaded = true;
+    });
+
+    SharedPreferences myId = await SharedPreferences.getInstance();
+    String myIdee = myId.getString("userId");
+
+    final urlPic =
+        "https://peertopeer.staging.cloudware.ng/api/upload_profile_pic.php";
+    var stream = new http.ByteStream(
+      DelegatingStream.typed(_image.openRead()),
+    );
+    var length = await _image.length();
+
+    var uri = Uri.parse(urlPic);
+
+    var request = new http.MultipartRequest("POST", uri);
+
+    request.fields["user_id"] = myIdee;
+
+    var multipartFile =
+        new http.MultipartFile('file', stream, length, filename: _image.path);
+
+    request.files.add(multipartFile);
+    var response = await request.send();
+    print(response.statusCode);
+    response.stream.transform(utf8.decoder).listen((value) {
+      print("VALUE $value");
+    });
+  }
+
+  Future<void> _submit() async {
+    if (_emailController.text.isEmpty) {
+      setState(() {
+        isAddress = true;
+      });
+      return;
+    }
+    //UPLOADED CHECK
+    if (_image == null || !_isUploaded) {
+      setState(() {
+        isImage = true;
+      });
+      return;
+    }
+
+    String userGender;
+    if (_gender == Gender.Male) {
+      userGender = "Male";
+    } else {
+      userGender = "Female";
+    }
+
+    print("GENDER $userGender");
+
+    print("FILE $_image");
+
+    String address = _emailController.text;
+
+    // List<int> imageBytes = _image.readAsBytesSync();
+    // String baseimage = base64Encode(imageBytes);
+
+    await Provider.of<AuthProvider>(context, listen: false)
+        .updateProfile(address, userGender);
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text(
+              'Profile updated',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            content: Text(
+              "Your profile has being successfully updated",
+              style: TextStyle(fontSize: 11),
+            ),
+          );
+        });
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.of(context).pushNamed(UpdatedProfileScreen.routeName);
     });
   }
 
@@ -100,11 +209,27 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
                     height: 10,
                   ),
                   Container(
-                    child: Text(
-                      "CLICK HERE TO CHANGE PICTURE",
-                      style: TextStyle(fontSize: 13, color: Colors.black),
-                    ),
+                    child: isImage
+                        ? Text(
+                            "Please click here to upload your profile pic",
+                            style: TextStyle(color: Colors.red[900]),
+                          )
+                        : Text(
+                            "CLICK HERE TO CHANGE PICTURE",
+                            style: TextStyle(fontSize: 13, color: Colors.black),
+                          ),
                   ),
+
+                  InkWell(
+                      onTap: _uploadImage,
+                      child: Chip(
+                        label: Text(
+                          'Upload image',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Theme.of(context).primaryColor,
+                      )),
+
                   SizedBox(
                     height: 30,
                   ),
@@ -172,9 +297,14 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 5),
                     child: TextField(
+                      keyboardType: TextInputType.emailAddress,
                       autofocus: false,
-                      // controller: _emailController,
+                      controller: _emailController,
                       decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.house,
+                          color: Theme.of(context).primaryColor,
+                        ),
                         hintText: "Enter address here",
                         focusedBorder: OutlineInputBorder(),
                         enabledBorder: OutlineInputBorder(
@@ -183,6 +313,12 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
                       ),
                     ),
                   ),
+                  !isAddress
+                      ? SizedBox()
+                      : Text(
+                          "Please enter your home address",
+                          style: TextStyle(color: Colors.red[900]),
+                        ),
                   SizedBox(
                     height: 35,
                   ),
@@ -193,10 +329,7 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4)),
                       padding: EdgeInsets.symmetric(vertical: 13),
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(UpdatedProfileScreen.routeName);
-                      },
+                      onPressed: _submit,
                       child: Text(
                         'Save changes',
                         style: TextStyle(

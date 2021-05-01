@@ -185,78 +185,92 @@ class _HomeWidgetState extends State<HomeWidget> {
                 height: 176,
                 // color: Colors.amber,
 
-                child: FutureBuilder(
-                  future: activities.recentActivitiesLimit(),
-                  // initialData: InitialData,
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Container(
-                        alignment: Alignment.center,
-                        // color: Colors.amber,
-                        height: MediaQuery.of(context).size.height * 0.4,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircularProgressIndicator(
-                              strokeWidth: 5,
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "Loading Recent Activities",
-                              style: TextStyle(
-                                  color: Colors.blue[900],
-                                  fontStyle: FontStyle.italic,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      );
-                    } else {}
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: activities.getRecentLimitCount,
-                      itemBuilder: (_, index) {
-                        return recentLimitActivities.isEmpty
-                            ? CircularProgressIndicator()
-                            : ListTile(
-                                leading: Icon(
-                                  Icons.local_activity_rounded,
-                                  color: Colors.black,
-                                ),
-                                title: Text(
-                                  activities.getRecentLimit[index]
-                                      ['description'],
-                                  style: TextStyle(
-                                      fontSize: deviceHeight < 700 ? 15 : 17,
-                                      color: Color.fromRGBO(14, 129, 59, 1),
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: Text(
-                                  "Your last activity was at",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12),
-                                ),
-                                trailing: Text(
-                                  activities.getRecentLimit[index]
-                                      ['date_created'],
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(121, 128, 235, 1),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              );
-                      },
-                    );
-                  },
-                ),
+                child: Activities(
+                    activities: activities, deviceHeight: deviceHeight),
               ),
             )
           ],
         ),
       ),
+    );
+  }
+}
+
+class Activities extends StatelessWidget {
+  const Activities({
+    Key key,
+    @required this.activities,
+    @required this.deviceHeight,
+  }) : super(key: key);
+
+  final RecentActivitiesProvider activities;
+  final double deviceHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: activities.recentActivitiesLimit(),
+      // initialData: InitialData,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            alignment: Alignment.center,
+            // color: Colors.amber,
+            height: MediaQuery.of(context).size.height * 0.4,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  strokeWidth: 5,
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  "Loading Recent Activities",
+                  style: TextStyle(
+                      color: Colors.blue[900],
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
+          );
+        } else {}
+        return ListView.builder(
+          shrinkWrap: true,
+          itemCount: activities.getRecentLimitCount,
+          itemBuilder: (_, index) {
+            return recentLimitActivities.isEmpty
+                ? CircularProgressIndicator()
+                : ListTile(
+                    leading: Icon(
+                      Icons.local_activity_rounded,
+                      color: Colors.black,
+                    ),
+                    title: Text(
+                      activities.getRecentLimit[index]['description'],
+                      style: TextStyle(
+                          fontSize: deviceHeight < 700 ? 15 : 17,
+                          color: Color.fromRGBO(14, 129, 59, 1),
+                          fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      "Your last activity was at",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
+                    trailing: Text(
+                      activities.getRecentLimit[index]['date_created'],
+                      style: TextStyle(
+                          color: Color.fromRGBO(121, 128, 235, 1),
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  );
+          },
+        );
+      },
     );
   }
 }

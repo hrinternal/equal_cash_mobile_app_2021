@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
 
   Future<void> _submit() async {
-    CircularProgressIndicator();
+    // CircularProgressIndicator();
     if (!_formKey.currentState.validate()) {
       return;
     }

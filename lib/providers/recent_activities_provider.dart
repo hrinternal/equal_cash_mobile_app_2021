@@ -30,12 +30,12 @@ class RecentActivitiesProvider with ChangeNotifier {
     );
 
     final responseBody = jsonDecode(response.body);
-    print("RESPONSE BODY $responseBody");
-    print("RESPONSE Distinct ${responseBody['response']}");
+    // print("RESPONSE BODY $responseBody");
+    // print("RESPONSE Distinct ${responseBody['response']}");
 
     // _recentLimit.asMap(responseBody['response'])
     _recentLimit.addAll(responseBody['response']['data']);
-    print("RECENT LIMIT $_recentLimit");
+    // print("RECENT LIMIT $_recentLimit");
 
     recentLimitActivities.addAll(responseBody['response']);
 

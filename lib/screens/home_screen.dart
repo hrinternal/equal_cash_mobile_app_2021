@@ -28,42 +28,39 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Color.fromRGBO(14, 129, 59, 1),
-          iconTheme: IconThemeData(color: Colors.white),
-        ),
-        drawer: AppDrawerWidget(),
-        body:
-            Container(color: Colors.white, child: homeWidgets[bottomBarIndex]),
-        bottomNavigationBar: BottomNavigationBar(
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home",
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.send_outlined), label: "Sell"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.notifications_none_rounded), label: "Alerts"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.person_outline), label: "Profile"),
-          ],
-          onTap: (index) {
-            setState(() {
-              bottomBarIndex = index;
-            });
-          },
-          unselectedFontSize: deviceHeight < 600 ? 13 : 14,
-          currentIndex: bottomBarIndex,
-          selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-          selectedFontSize: deviceHeight < 600 ? 14 : 16,
-          unselectedItemColor: Colors.grey[700],
-          selectedItemColor: Color.fromRGBO(14, 129, 59, 1),
-          showUnselectedLabels: true,
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Color.fromRGBO(14, 129, 59, 1),
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
+      drawer: AppDrawerWidget(),
+      body: Container(color: Colors.white, child: homeWidgets[bottomBarIndex]),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.send_outlined), label: "Sell"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.notifications_none_rounded), label: "Alerts"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline), label: "Profile"),
+        ],
+        onTap: (index) {
+          setState(() {
+            bottomBarIndex = index;
+          });
+        },
+        unselectedFontSize: deviceHeight < 600 ? 13 : 14,
+        currentIndex: bottomBarIndex,
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+        selectedFontSize: deviceHeight < 600 ? 14 : 16,
+        unselectedItemColor: Colors.grey[700],
+        selectedItemColor: Color.fromRGBO(14, 129, 59, 1),
+        showUnselectedLabels: true,
       ),
     );
   }

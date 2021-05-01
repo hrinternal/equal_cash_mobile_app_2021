@@ -264,7 +264,8 @@ class _ConfirmCurrencyPurchaseState extends State<ConfirmCurrencyPurchase> {
                                     "Sell request summary",
                                     style: TextStyle(
                                         color: Colors.black,
-                                        fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
                                   ),
                                   Spacer(),
                                   IconButton(
