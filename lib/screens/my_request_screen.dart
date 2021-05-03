@@ -1,5 +1,7 @@
+import 'package:equal_cash/providers/transaction_provider.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MyRequestScreen extends StatefulWidget {
   static const routeName = "request-screen";
@@ -10,6 +12,8 @@ class MyRequestScreen extends StatefulWidget {
 class _MyRequestScreenState extends State<MyRequestScreen> {
   @override
   Widget build(BuildContext context) {
+    final requests =
+        Provider.of<TransactionsProvider>(context).getUserRequest();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

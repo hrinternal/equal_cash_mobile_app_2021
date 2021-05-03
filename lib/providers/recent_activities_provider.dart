@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RecentActivitiesProvider with ChangeNotifier {
+  int c = 0;
+
   List _recentLimit = [];
 // <HashMap<String, dynamic>>
   List get getRecentLimit {
@@ -28,19 +30,14 @@ class RecentActivitiesProvider with ChangeNotifier {
     final response = await http.post(
       Uri.parse(url),
     );
-
     final responseBody = jsonDecode(response.body);
-    // print("RESPONSE BODY $responseBody");
-    // print("RESPONSE Distinct ${responseBody['response']}");
+    c++;
 
-    // _recentLimit.asMap(responseBody['response'])
-    _recentLimit.addAll(responseBody['response']['data']);
-    // print("RECENT LIMIT $_recentLimit");
+    if (c == 1) {
+      _recentLimit.addAll(responseBody['response']['data']);
+    } else {}
 
     recentLimitActivities.addAll(responseBody['response']);
-
-    // final activities = responseBody['response']['data'] as List;
-    // print(activities);
   }
 
   // Future recentActivities() async {
