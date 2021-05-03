@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PendingTransaction extends StatefulWidget {
-  static const routeName = "completed-transaction-screen";
+  static const routeName = "pending-transaction-screen";
   @override
   _PendingTransactionState createState() => _PendingTransactionState();
 }

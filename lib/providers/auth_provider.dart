@@ -185,6 +185,7 @@ class AuthProvider with ChangeNotifier {
     // }
   }
 
+//UPLOAD IMAGE
   Future<void> uploadImage(File pic) async {
     SharedPreferences myId = await SharedPreferences.getInstance();
     String myIdee = myId.getString("userId");
@@ -204,5 +205,33 @@ class AuthProvider with ChangeNotifier {
     // print("PRINT STATUS CODE ${picResponse.statusCode}");
 
     // print("PIC RESPONSE $picResponse");
+  }
+
+  //GET IMAGE
+  String profilePic = "";
+
+  String get getProfilePic {
+    return profilePic;
+  }
+
+  //GET PROFILE IMAGE
+  Future getImage() async {
+    SharedPreferences myId = await SharedPreferences.getInstance();
+    String myIdee = myId.getString("userId");
+
+    print("IDEE $myIdee");
+
+    final url =
+        "https://peertopeer.staging.cloudware.ng/api/get_profile_pic.php?user_id=$myIdee";
+
+    final response = await http.get(Uri.parse(url));
+
+    final getPicResponse = jsonDecode(response.body);
+
+    profilePic = getPicResponse['response']['data']['profile_pic'];
+
+    print("PIC RETRIEVE RESPONSE $getPicResponse");
+    print(
+        "PIC RETRIEVE RESPONSE ${getPicResponse['response']['data']['profile_pic']}");
   }
 }

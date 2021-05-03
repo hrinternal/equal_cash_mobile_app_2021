@@ -1,9 +1,12 @@
+import 'package:equal_cash/providers/auth_provider.dart';
+import 'package:equal_cash/providers/recent_activities_provider.dart';
 import 'package:equal_cash/screens/currency_sell_request_screen.dart';
 import 'package:equal_cash/screens/save_profile_screen.dart';
 import 'package:equal_cash/screens/settings_screen.dart';
 import 'package:equal_cash/screens/update_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:equal_cash/models/home_pager_model.dart';
+import 'package:provider/provider.dart';
 
 class ProfileWidget extends StatefulWidget {
   @override
@@ -13,6 +16,8 @@ class ProfileWidget extends StatefulWidget {
 class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   Widget build(BuildContext context) {
+    final activities = Provider.of<AuthProvider>(context, listen: false);
+
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
     return Container(
@@ -36,17 +41,54 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         // color: Colors.black,
                         fontSize: 12),
                   ),
-                  trailing: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: Container(
-                        decoration: BoxDecoration(border: Border.all(width: 2)),
-                        height: 55,
-                        width: 55,
-                        child: Icon(
-                          Icons.person,
-                          color: Color.fromRGBO(14, 129, 59, 1),
-                        ),
-                      )),
+                  trailing: FutureBuilder(
+                    future: activities.getImage(),
+                    // initialData: InitialData,
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Container(
+                                decoration:
+                                    BoxDecoration(border: Border.all(width: 2)),
+                                height: 55,
+                                width: 55,
+                                child: Image.asset(
+                                  "assets/images/loading1.png",
+                                  // fit: BoxFit.cover,
+                                  height: 20,
+                                  width: 20,
+                                )));
+                      } else {
+                        if (activities.getProfilePic == null) {
+                          return ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Container(
+                                decoration:
+                                    BoxDecoration(border: Border.all(width: 2)),
+                                height: 55,
+                                width: 55,
+                                child: Icon(
+                                  Icons.person,
+                                  color: Color.fromRGBO(14, 129, 59, 1),
+                                ),
+                              ));
+                        } else {
+                          return ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(width: 2)),
+                                  height: 55,
+                                  width: 55,
+                                  child: Image.network(
+                                    activities.getProfilePic,
+                                    fit: BoxFit.cover,
+                                  )));
+                        }
+                      }
+                    },
+                  ),
                 ),
               ],
             ),
