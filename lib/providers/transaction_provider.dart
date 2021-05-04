@@ -50,16 +50,25 @@ class TransactionsProvider with ChangeNotifier {
     print(response.body);
   }
 
+  //ALL REQUESTS
+  List allRequests = [];
+
+  List get getAllRequest {
+    return [...allRequests];
+  }
+
   //ALL REQUEST
   Future getAllRequests() async {
     final url =
-        "https://peer-to-peer.staging.cloudware.ng/api/get_all_requests.php";
+        "https://peertopeer.staging.cloudware.ng/api/get_all_requests.php";
     final response = await http.get(Uri.parse(url));
     final data = jsonDecode(response.body);
 
     d++;
 
     List items = data["response"]["data"];
+
+    getAllRequest.addAll(items);
 
     print("ALL DATA REQUESTS $data");
 
@@ -69,8 +78,15 @@ class TransactionsProvider with ChangeNotifier {
 
     print("ELEMENTS $_currencies");
     // _currencies.addAll(data["response"]["data"]);
-    print("DATA REQUEST ${data["response"]}");
+    print("ALL REQUEST ${data["response"]}");
     print(response.body);
+  }
+
+  //USER REQUESTS
+  List userRequests = [];
+
+  List get getUserRequests {
+    return [...userRequests];
   }
 
 //USER REQUEST
@@ -79,11 +95,13 @@ class TransactionsProvider with ChangeNotifier {
     String userId = sharedPreferences.getString("userId");
 
     final url =
-        "https://peer-to-peer.staging.cloudware.ng/api/get_request_by_user_id.php?user_id=$userId";
+        "https://peertopeer.staging.cloudware.ng/api/get_request_by_user_id.php?user_id=$userId";
     final response = await http.get(Uri.parse(url));
     final data = jsonDecode(response.body);
 
     d++;
+
+    userRequests.add(data['response']['data']);
 
     // List items = data["response"]["data"];
 

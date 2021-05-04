@@ -12,8 +12,7 @@ class MyRequestScreen extends StatefulWidget {
 class _MyRequestScreenState extends State<MyRequestScreen> {
   @override
   Widget build(BuildContext context) {
-    final requests =
-        Provider.of<TransactionsProvider>(context).getUserRequest();
+    final requests = Provider.of<TransactionsProvider>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -63,183 +62,140 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                 SizedBox(
                   height: 20,
                 ),
-                ListTile(
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (_) {
-                          return Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            child: AlertDialogWidget(),
-                          );
-                        });
-                  },
-                  leading: Icon(
-                    Icons.circle,
-                    size: 10,
-                  ),
-                  title: Text(
-                    "\$100 USD - NGN Naira",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Container(
-                    alignment: Alignment.centerLeft,
-                    // color: Colors.green,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Time frame - 1 hour"),
-                        // Spacer(),
-                        SizedBox(
-                          height: 1,
-                        ),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-                          color: Colors.grey,
-                          child: Text(
-                            "No offers yet",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  trailing: Container(
-                    child: Column(
-                      children: [
-                        Icon(Icons.more_vert),
-                        Spacer(),
-                        Text(
-                          "now",
-                          style: TextStyle(
-                              color: Color.fromRGBO(121, 128, 235, 1)),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Divider(
-                  thickness: 2,
-                ),
-                ListTile(
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (_) {
-                          return Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            child: AlertDialogWidget(),
-                          );
-                        });
-                  },
-                  leading: Icon(Icons.circle,
-                      size: 10, color: Theme.of(context).primaryColor),
-                  title: Text(
-                    "\$500,000 NGN - USD Dollars",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Container(
-                    alignment: Alignment.centerLeft,
-                    // color: Colors.green,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Time frame - 1 hour"),
-                        // Spacer(),
-                        SizedBox(
-                          height: 1,
-                        ),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-                          color: Theme.of(context).primaryColor,
-                          child: Text(
-                            "3 Offers",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  trailing: Container(
-                    child: Column(
-                      children: [
-                        Icon(Icons.more_vert),
-                        Spacer(),
-                        Text(
-                          "now",
-                          style: TextStyle(
-                              color: Color.fromRGBO(121, 128, 235, 1)),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Divider(
-                  thickness: 2,
-                ),
-                ListTile(
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (_) {
-                          return Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            child: AlertDialogWidget(),
-                          );
-                        });
-                  },
-                  leading: Icon(
-                    Icons.circle,
-                    size: 10,
-                    color: Color.fromRGBO(255, 72, 97, 1),
-                  ),
-                  title: Text(
-                    "c1000 GHC - NGN Naira",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Container(
-                    alignment: Alignment.centerLeft,
-                    // color: Colors.green,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Time frame - 1 hour"),
-                        // Spacer(),
-                        SizedBox(
-                          height: 1,
-                        ),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-                          color: Color.fromRGBO(255, 72, 97, 1),
-                          child: Text(
-                            "Expired - 0 Offers",
+
+                FutureBuilder(
+                  future: requests.getUserRequest(),
+                  // initialData: InitialData,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                          child: Column(
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 20),
+                          Text(
+                            "Loading your requests!!!",
                             style: TextStyle(
-                              color: Colors.white,
-                            ),
+                                color: Colors.black,
+                                fontStyle: FontStyle.italic),
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  trailing: Container(
-                    child: Column(
-                      children: [
-                        Icon(Icons.more_vert),
-                        Spacer(),
-                        Text(
-                          "now",
-                          style: TextStyle(
-                              color: Color.fromRGBO(121, 128, 235, 1)),
-                        )
-                      ],
-                    ),
-                  ),
+                        ],
+                      ));
+                    } else {
+                      if (requests.getUserRequests.isEmpty) {
+                        return Container(
+                          child: Column(children: [
+                            Center(
+                                child: Container(
+                              child: Column(
+                                children: [
+                                  Container(
+                                      height: 150,
+                                      // color: Colors.red,
+                                      child: Image.asset(
+                                        'assets/images/emptybox.png',
+                                        fit: BoxFit.cover,
+                                      )),
+                                  RichText(
+                                      text: TextSpan(children: [
+                                    TextSpan(
+                                        text: 'You ',
+                                        style: TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 45)),
+                                    TextSpan(
+                                        text: 'have no request yet!',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20))
+                                  ]))
+                                ],
+                              ),
+                            ))
+                          ]),
+                        );
+                      } else {
+                        return ListView.builder(
+                            itemCount: requests.getUserRequests.length,
+                            shrinkWrap: true,
+                            itemBuilder: (_, index) {
+                              return Column(
+                                children: [
+                                  ListTile(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) {
+                                            return Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.9,
+                                              child: AlertDialogWidget(),
+                                            );
+                                          });
+                                    },
+                                    leading: Icon(
+                                      Icons.circle,
+                                      size: 10,
+                                    ),
+                                    title: Text(
+                                      "\$100 USD - NGN Naira",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Container(
+                                      alignment: Alignment.centerLeft,
+                                      // color: Colors.green,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text("Time frame - 1 hour"),
+                                          // Spacer(),
+                                          SizedBox(
+                                            height: 1,
+                                          ),
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 3, vertical: 2),
+                                            color: Colors.grey,
+                                            child: Text(
+                                              "No offers yet",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    trailing: Container(
+                                      child: Column(
+                                        children: [
+                                          Icon(Icons.more_vert),
+                                          Spacer(),
+                                          Text(
+                                            "now",
+                                            style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                    121, 128, 235, 1)),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(
+                                    thickness: 2,
+                                  ),
+                                ],
+                              );
+                            });
+                      }
+                    }
+                  },
                 ),
                 SizedBox(height: 70),
                 // Spacer(),
@@ -273,7 +229,8 @@ class AlertDialogWidget extends StatelessWidget {
         children: [
           Text(
             "Sell request summary",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
           ),
           Spacer(),
           IconButton(
