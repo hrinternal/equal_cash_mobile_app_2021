@@ -1,3 +1,4 @@
+import 'package:equal_cash/models/currency_model.dart';
 import 'package:equal_cash/providers/transaction_provider.dart';
 import 'package:equal_cash/screens/confirm_currency_buy.dart';
 import 'package:equal_cash/screens/currency_sell_request_screen.dart';
@@ -65,7 +66,20 @@ class _CurrencyBuyState extends State<CurrencyBuy> {
                   future: currencies.getCurrencies(),
                   builder: (_, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                      return Column(
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "Loading currencies",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic),
+                          )
+                        ],
+                      );
                     } else {
                       return ListView.builder(
                           physics: BouncingScrollPhysics(),
@@ -78,11 +92,29 @@ class _CurrencyBuyState extends State<CurrencyBuy> {
                                   thickness: 1,
                                 ),
                                 ListTile(
-                                  onTap: () => Navigator.of(context).pushNamed(
-                                      ConfirmCurrencyPurchase.routeName),
-                                  leading: Icon(
-                                    Icons.money,
-                                    color: Theme.of(context).primaryColor,
+                                  onTap: () {
+                                    selectedCurrencies.update(
+                                        "cBuy",
+                                        (value) =>
+                                            currencies.getAllCurrencies[index]
+                                                ['currency_symbol']);
+                                    selectedCurrencies.update(
+                                        "cBuyImg",
+                                        (value) =>
+                                            currencies.getAllCurrencies[index]
+                                                ['currency_image']);
+                                    print(selectedCurrencies['cBuyImg']);
+                                    print(selectedCurrencies['cBuy']);
+                                    Navigator.of(context).pushNamed(
+                                        ConfirmCurrencyPurchase.routeName);
+                                  },
+                                  leading: ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: Image.network(
+                                      currencies.getAllCurrencies[index]
+                                          ['currency_image'],
+                                      fit: BoxFit.fitHeight,
+                                    ),
                                   ),
                                   title: Text(currencies.getAllCurrencies[index]
                                       ['currency_name']),

@@ -1,7 +1,10 @@
 // import 'dart:html';
 
+import 'package:equal_cash/models/currency_model.dart';
+import 'package:equal_cash/providers/transaction_provider.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ConfirmCurrencyPurchase extends StatefulWidget {
   static const routeName = "currency-confirm";
@@ -11,10 +14,14 @@ class ConfirmCurrencyPurchase extends StatefulWidget {
 }
 
 class _ConfirmCurrencyPurchaseState extends State<ConfirmCurrencyPurchase> {
+  final rateController = TextEditingController();
+  final amountController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
+    final confirmCurrency = Provider.of<TransactionsProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -52,15 +59,17 @@ class _ConfirmCurrencyPurchaseState extends State<ConfirmCurrencyPurchase> {
                           // color: Colors.amber,
                           width: 60,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "USD",
-                                style: TextStyle(fontSize: 12),
+                                selectedCurrencies['cSell'],
+                                style: TextStyle(fontSize: 14),
                               ),
                               SizedBox(
                                 width: 10,
                               ),
-                              Image.asset("assets/images/usicon.png")
+                              Image.network(selectedCurrencies["cSellImg"])
+                              // Image.asset("assets/images/usicon.png")
                             ],
                           ),
                         )
@@ -77,15 +86,17 @@ class _ConfirmCurrencyPurchaseState extends State<ConfirmCurrencyPurchase> {
                         Container(
                           width: 60,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "NGN",
-                                style: TextStyle(fontSize: 12),
+                                selectedCurrencies['cBuy'],
+                                style: TextStyle(fontSize: 14),
                               ),
                               SizedBox(
                                 width: 10,
                               ),
-                              Image.asset("assets/images/niger_icon.png")
+                              // Image.asset("assets/images/niger_icon.png")
+                              Image.network(selectedCurrencies["cBuyImg"])
                             ],
                           ),
                         )
@@ -99,27 +110,19 @@ class _ConfirmCurrencyPurchaseState extends State<ConfirmCurrencyPurchase> {
               ),
               //CURRENCY RATE
               Container(
-                alignment: Alignment.center,
-                height: 30,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.swap_vert_rounded),
-                    RichText(
-                      text: TextSpan(children: [
-                        TextSpan(
-                            text: "1 USD - ",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12)),
-                        TextSpan(
-                            text: "480 NGN",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12)),
-                      ]),
-                    ),
-                  ],
-                ),
-              ),
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  alignment: Alignment.center,
+                  height: 30,
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                        hintText: "Exchange rate",
+                        hintStyle: TextStyle(fontSize: 13),
+                        prefixIcon: Icon(
+                          Icons.rate_review_rounded,
+                          color: Theme.of(context).primaryColor,
+                        )),
+                    keyboardType: TextInputType.number,
+                  )),
               SizedBox(
                 height: 20,
               ),
@@ -147,11 +150,18 @@ class _ConfirmCurrencyPurchaseState extends State<ConfirmCurrencyPurchase> {
                     ),
                     Row(
                       children: [
-                        Text(
-                          "0.00",
-                          style: TextStyle(
-                              fontSize: 22,
-                              color: Color.fromRGBO(14, 129, 59, 1)),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.45,
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                                hintText: "Amount to send",
+                                hintStyle: TextStyle(fontSize: 13),
+                                prefixIcon: Icon(
+                                  Icons.send,
+                                  color: Theme.of(context).primaryColor,
+                                )),
+                            keyboardType: TextInputType.number,
+                          ),
                         ),
                         Spacer(),
                         Container(

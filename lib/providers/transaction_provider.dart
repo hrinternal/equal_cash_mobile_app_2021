@@ -18,6 +18,8 @@ class Currencies {
 class TransactionsProvider with ChangeNotifier {
   int c = 0;
   int d = 0;
+  int e = 0;
+  int f = 0;
 
   List _currencies = [];
 
@@ -64,7 +66,7 @@ class TransactionsProvider with ChangeNotifier {
     final response = await http.get(Uri.parse(url));
     final data = jsonDecode(response.body);
 
-    d++;
+    f++;
 
     List items = data["response"]["data"];
 
@@ -72,7 +74,7 @@ class TransactionsProvider with ChangeNotifier {
 
     print("ALL DATA REQUESTS $data");
 
-    if (d == 1) {
+    if (f == 1) {
       // _currencies.addAll(items);
     } else {}
 
@@ -99,15 +101,15 @@ class TransactionsProvider with ChangeNotifier {
     final response = await http.get(Uri.parse(url));
     final data = jsonDecode(response.body);
 
-    d++;
+    e++;
 
-    userRequests.add(data['response']['data']);
+    userRequests.addAll(data['response']['data']);
 
     // List items = data["response"]["data"];
 
     print("USER DATA REQUESTS $data");
 
-    if (d == 1) {
+    if (e == 1) {
       // _currencies.addAll(items);
     } else {}
 
@@ -184,5 +186,16 @@ class TransactionsProvider with ChangeNotifier {
     // _currencies.addAll(data["response"]["data"]);
     print("PENDING BUY ${data["response"]}");
     print(response.body);
+  }
+
+  // CONFIRM CURRENCY
+  Future<void> confirmCurrency(String amount, String rate) async {
+    final url =
+        "https://peertopeer.staging.cloudware.ng/api/get_total_for_sell.php";
+    final response =
+        await http.post(Uri.parse(url), body: {"amount": amount, "rate": rate});
+
+    final responseBody = jsonDecode(response.body);
+    print("CONFIRM CURRENCY: $responseBody");
   }
 }

@@ -1,3 +1,4 @@
+import 'package:equal_cash/models/currency_model.dart';
 import 'package:equal_cash/providers/transaction_provider.dart';
 import 'package:equal_cash/screens/currency_buy.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,7 +49,20 @@ class _CurrencySellWidgetState extends State<CurrencySellWidget> {
                 future: currencies.getCurrencies(),
                 builder: (_, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return Column(
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "Loading currencies",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic),
+                        )
+                      ],
+                    );
                   } else {
                     return ListView.builder(
                         physics: BouncingScrollPhysics(),
@@ -61,11 +75,28 @@ class _CurrencySellWidgetState extends State<CurrencySellWidget> {
                                 thickness: 1,
                               ),
                               ListTile(
-                                onTap: () => Navigator.of(context)
-                                    .pushNamed(CurrencyBuy.routeName),
-                                leading: Icon(
-                                  Icons.money,
-                                  color: Theme.of(context).primaryColor,
+                                onTap: () {
+                                  selectedCurrencies.update(
+                                      "cSell",
+                                      (value) =>
+                                          currencies.getAllCurrencies[index]
+                                              ['currency_symbol']);
+                                  selectedCurrencies.update(
+                                      "cSellImg",
+                                      (value) =>
+                                          currencies.getAllCurrencies[index]
+                                              ['currency_image']);
+                                  print(selectedCurrencies['cSell']);
+                                  Navigator.of(context)
+                                      .pushNamed(CurrencyBuy.routeName);
+                                },
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: Image.network(
+                                    currencies.getAllCurrencies[index]
+                                        ['currency_image'],
+                                    fit: BoxFit.fitHeight,
+                                  ),
                                 ),
                                 title: Text(currencies.getAllCurrencies[index]
                                     ['currency_name']),

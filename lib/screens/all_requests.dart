@@ -98,13 +98,13 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
                                   RichText(
                                       text: TextSpan(children: [
                                     TextSpan(
-                                        text: 'You ',
+                                        text: 'No ',
                                         style: TextStyle(
                                             color: Colors.red,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 40)),
                                     TextSpan(
-                                        text: 'have no request yet!',
+                                        text: 'request(s) yet!',
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold,
