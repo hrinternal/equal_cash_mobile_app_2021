@@ -1,5 +1,5 @@
 import 'package:equal_cash/models/response_model.dart';
-import 'package:equal_cash/providers/recent_activities_provider.dart';
+import 'package:equal_cash/providers/anonymous.dart';
 import 'package:flutter/material.dart';
 import 'package:equal_cash/models/home_pager_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,16 +26,10 @@ class _HomeWidgetState extends State<HomeWidget> {
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
 
-    final activities =
-        Provider.of<RecentActivitiesProvider>(context, listen: false);
-
     print("MY RECENT ACT $recentLimitActivities");
     List actList = recentLimitActivities['data'];
 
     print("ACT LIST $actList}");
-
-    // final activitiesAll =
-    //     Provider.of<RecentActivitiesProvider>(context).recentActivities();
 
     return SingleChildScrollView(
       child: Container(
@@ -50,7 +44,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     // initialData: InitialData,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       return Text(
-                        "Welcome, ${snapshot.data}",
+                        "Welcome",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
@@ -186,7 +180,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                 // color: Colors.amber,
 
                 child: Activities(
-                    activities: activities, deviceHeight: deviceHeight),
+                     deviceHeight: deviceHeight),
               ),
             )
           ],
@@ -199,18 +193,18 @@ class _HomeWidgetState extends State<HomeWidget> {
 class Activities extends StatelessWidget {
   const Activities({
     Key key,
-    @required this.activities,
+
     @required this.deviceHeight,
   }) : super(key: key);
 
-  final RecentActivitiesProvider activities;
+
   final double deviceHeight;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: activities.recentActivitiesLimit(),
-      // initialData: InitialData,
+
+
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
@@ -239,7 +233,7 @@ class Activities extends StatelessWidget {
         } else {}
         return ListView.builder(
           shrinkWrap: true,
-          itemCount: activities.getRecentLimitCount,
+
           itemBuilder: (_, index) {
             return recentLimitActivities.isEmpty
                 ? CircularProgressIndicator()
@@ -249,7 +243,7 @@ class Activities extends StatelessWidget {
                       color: Colors.black,
                     ),
                     title: Text(
-                      activities.getRecentLimit[index]['description'],
+                     '',
                       style: TextStyle(
                           fontSize: deviceHeight < 700 ? 15 : 17,
                           color: Color.fromRGBO(14, 129, 59, 1),
@@ -261,7 +255,7 @@ class Activities extends StatelessWidget {
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                     ),
                     trailing: Text(
-                      activities.getRecentLimit[index]['date_created'],
+                     '',
                       style: TextStyle(
                           color: Color.fromRGBO(121, 128, 235, 1),
                           fontSize: 14,

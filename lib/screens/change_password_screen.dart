@@ -1,5 +1,4 @@
 import 'package:equal_cash/models/http_exception.dart';
-import 'package:equal_cash/providers/auth_provider.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,13 +48,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     });
     SharedPreferences getUserId = await SharedPreferences.getInstance();
     print("GET ID ${getUserId.getString('userId')}");
-    try {
-      await Provider.of<AuthProvider>(context, listen: false).createNewPassword(
-          passwords['oldPassword'],
-          passwords['newPassword'],
-          passwords['confirmPassword'],
-          getUserId.getString("userId"));
 
+    Future.delayed(
+        Duration(
+          seconds: 4,
+        ), () {
       Alert(
         style: AlertStyle(
           animationDuration: Duration(milliseconds: 500),
@@ -87,50 +84,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           color: Colors.green[900],
         ),
       ).show();
+    });
 
-      Future.delayed(Duration(seconds: 3), () {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) {
-          return HomeScreen();
-        }));
-      });
-    } on HttpException catch (error) {
-      Alert(
-        style: AlertStyle(
-          animationDuration: Duration(milliseconds: 500),
-          animationType: AnimationType.fromTop,
-          titleStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-        ),
-        // desc: error.message,
-        title: "Incorrect Old Password",
-        context: context,
-        content: Text(
-          error.message,
-          style: TextStyle(fontSize: 14),
-          textAlign: TextAlign.center,
-        ),
-        type: AlertType.error,
-        buttons: [
-          DialogButton(
-            child: Text(
-              "Okay",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-            onPressed: () => Navigator.pop(context),
-            color: Color.fromRGBO(0, 179, 134, 1.0),
-            radius: BorderRadius.circular(0.0),
-          ),
-        ],
-        image: Icon(
-          Icons.info,
-          color: Colors.blue[900],
-        ),
-      ).show();
-      setState(() {
-        _isLoading = false;
-      });
-    } catch (error) {
-      throw error;
-    }
+    Future.delayed(Duration(seconds: 6), () {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) {
+        return HomeScreen();
+      }));
+    });
+
     setState(() {
       _isLoading = false;
     });
@@ -408,39 +369,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               borderRadius: BorderRadius.circular(10)),
                           padding: EdgeInsets.symmetric(vertical: 18),
                           onPressed: _submit,
-                          child: _isLoading
-                              ? Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 3,
-                                      child: Center(
-                                        child: Text(
-                                          "Please wait!!!",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                        margin: EdgeInsets.only(right: 20),
-                                        height: 15,
-                                        width: 15,
-                                        child: CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  Colors.white),
-                                        ))
-                                  ],
-                                )
-                              : Text(
-                                  'Change password',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
+                          child: Text(
+                            'Change password',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16),
+                          ),
                           color: Theme.of(context).primaryColor,
                         ),
                       ),

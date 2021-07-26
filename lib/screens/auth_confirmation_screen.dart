@@ -10,11 +10,6 @@ class AuthConfirmationScreen extends StatefulWidget {
 
 class _AuthConfirmationScreenState extends State<AuthConfirmationScreen> {
   final _codeController = TextEditingController();
-  // @override
-  // void dispose() {
-  //   _codeController.dispose();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {

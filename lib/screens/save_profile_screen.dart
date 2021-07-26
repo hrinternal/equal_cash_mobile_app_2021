@@ -11,7 +11,6 @@ import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:equal_cash/models/http_exception.dart';
-import 'package:equal_cash/providers/auth_provider.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:equal_cash/screens/update_profile_screen.dart';
 import 'package:equal_cash/screens/updated_profile_screen.dart';
@@ -121,26 +120,24 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
 
     String address = _emailController.text;
 
-    // List<int> imageBytes = _image.readAsBytesSync();
-    // String baseimage = base64Encode(imageBytes);
+    Future.delayed(Duration(seconds: 4), () {
+      showDialog(
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              title: Text(
+                'Profile updated',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              content: Text(
+                "Your profile has being successfully updated",
+                style: TextStyle(fontSize: 11),
+              ),
+            );
+          });
+    });
 
-    await Provider.of<AuthProvider>(context, listen: false)
-        .updateProfile(address, userGender);
-    showDialog(
-        context: context,
-        builder: (_) {
-          return AlertDialog(
-            title: Text(
-              'Profile updated',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            content: Text(
-              "Your profile has being successfully updated",
-              style: TextStyle(fontSize: 11),
-            ),
-          );
-        });
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 6), () {
       Navigator.of(context).pushNamed(UpdatedProfileScreen.routeName);
     });
   }

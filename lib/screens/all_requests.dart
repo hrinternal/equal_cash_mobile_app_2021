@@ -90,7 +90,6 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
                                 children: [
                                   Container(
                                       height: 150,
-                                      // color: Colors.red,
                                       child: Image.asset(
                                         'assets/images/emptybox.png',
                                         fit: BoxFit.cover,
@@ -141,7 +140,7 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
                                       size: 10,
                                     ),
                                     title: Text(
-                                      "\$100 USD - NGN Naira",
+                                      "${requests.getAllRequest[index]['amount']} ${requests.getAllRequest[index]['base_currency']} - ${requests.getAllRequest[index]['quote_currency']}",
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
@@ -153,7 +152,8 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text("Time frame - 1 hour"),
+                                          Text(
+                                              "Time frame -  ${requests.getAllRequest[index]['time_frame']}hr"),
                                           // Spacer(),
                                           SizedBox(
                                             height: 1,
@@ -173,11 +173,14 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
                                     ),
                                     trailing: Container(
                                       child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          Icon(Icons.more_vert),
-                                          Spacer(),
+                                          // Icon(Icons.more_vert),
+
                                           Text(
-                                            "now",
+                                            requests.getAllRequest[index]
+                                                ['date_created'],
                                             style: TextStyle(
                                                 color: Color.fromRGBO(
                                                     121, 128, 235, 1)),

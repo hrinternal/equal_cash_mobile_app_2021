@@ -1,5 +1,5 @@
 import 'package:equal_cash/models/http_exception.dart';
-import 'package:equal_cash/providers/auth_provider.dart';
+
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
 import 'package:equal_cash/screens/login_screen.dart';
 import 'package:equal_cash/screens/reset_forgot_password.dart';
@@ -39,10 +39,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     setState(() {
       isLoading = true;
     });
-    try {
-      await Provider.of<AuthProvider>(context, listen: false)
-          .resetPassword(savedData["email"]);
 
+    Future.delayed(Duration(seconds: 4), () {
       showDialog(
           context: context,
           builder: (_) {
@@ -70,63 +68,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                     ),
                   ]),
-                )
-
-                // Text(
-                //   "A reset password link has been sent to ${savedData['email']}",
-                //   style: TextStyle(
-                //     fontSize: 14,
-                //     fontWeight: FontWeight.bold,
-                //   ),
-                // ),
-                );
+                ));
           });
+    });
 
-      Future.delayed(Duration(seconds: 5), () {
-        Navigator.of(context).pushNamed(LoginScreen.routeName);
-      });
-    } on HttpException catch (error) {
-      Alert(
-        style: AlertStyle(
-          animationDuration: Duration(milliseconds: 500),
-          animationType: AnimationType.fromTop,
-          titleStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-        ),
-        // desc: error.message,
-        title: "User not found",
-        context: context,
-        content: Text(
-          error.message,
-          style: TextStyle(
-            fontSize: 15,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        type: AlertType.info,
-        buttons: [
-          DialogButton(
-            child: Text(
-              "Okay",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-            onPressed: () => Navigator.pop(context),
-            color: Color.fromRGBO(0, 179, 134, 1.0),
-            radius: BorderRadius.circular(0.0),
-          ),
-        ],
-        image: Icon(
-          Icons.info,
-          color: Colors.red[900],
-        ),
-      ).show();
-      setState(() {
-        isLoading = false;
-      });
-    } catch (error) {
-      throw error;
-    }
-    setState(() {
-      isLoading = false;
+    Future.delayed(Duration(seconds: 6), () {
+      Navigator.of(context).pushNamed(LoginScreen.routeName);
     });
   }
 
@@ -237,38 +184,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       borderRadius: BorderRadius.circular(10)),
                   padding: EdgeInsets.symmetric(vertical: 18),
                   onPressed: _submit,
-                  child: isLoading
-                      ? Row(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Center(
-                                child: Text(
-                                  "Please wait!!!",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              ),
-                            ),
-                            Container(
-                                margin: EdgeInsets.only(right: 20),
-                                height: 15,
-                                width: 15,
-                                child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
-                                ))
-                          ],
-                        )
-                      : Text(
-                          'Send Reset Code',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
+                  child: Text(
+                    'Send Reset Code',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
+                  ),
                   color: Theme.of(context).primaryColor,
                 ),
               ),

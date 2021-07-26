@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:equal_cash/models/currency_model.dart';
 import 'package:equal_cash/screens/currency_buy.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -16,11 +17,6 @@ class Currencies {
 }
 
 class TransactionsProvider with ChangeNotifier {
-  int c = 0;
-  int d = 0;
-  int e = 0;
-  int f = 0;
-
   List _currencies = [];
 
   List get getAllCurrencies {
@@ -38,13 +34,10 @@ class TransactionsProvider with ChangeNotifier {
     final data = jsonDecode(response.body);
 
     // data["data"];
-    c++;
 
     List items = data["response"]["data"];
 
-    if (c == 1) {
-      _currencies.addAll(items);
-    } else {}
+    _currencies.addAll(items);
 
     print("ELEMENTS $_currencies");
     // _currencies.addAll(data["response"]["data"]);
@@ -66,20 +59,12 @@ class TransactionsProvider with ChangeNotifier {
     final response = await http.get(Uri.parse(url));
     final data = jsonDecode(response.body);
 
-    f++;
-
-    List items = data["response"]["data"];
-
-    getAllRequest.addAll(items);
+    allRequests = data["response"]["data"];
 
     print("ALL DATA REQUESTS $data");
 
-    if (f == 1) {
-      // _currencies.addAll(items);
-    } else {}
-
     print("ELEMENTS $_currencies");
-    // _currencies.addAll(data["response"]["data"]);
+
     print("ALL REQUEST ${data["response"]}");
     print(response.body);
   }
@@ -91,33 +76,7 @@ class TransactionsProvider with ChangeNotifier {
     return [...userRequests];
   }
 
-//USER REQUEST
-  Future getUserRequest() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String userId = sharedPreferences.getString("userId");
-
-    final url =
-        "https://peertopeer.staging.cloudware.ng/api/get_request_by_user_id.php?user_id=$userId";
-    final response = await http.get(Uri.parse(url));
-    final data = jsonDecode(response.body);
-
-    e++;
-
-    userRequests.addAll(data['response']['data']);
-
-    // List items = data["response"]["data"];
-
-    print("USER DATA REQUESTS $data");
-
-    if (e == 1) {
-      // _currencies.addAll(items);
-    } else {}
-
-    print("ELEMENTS $_currencies");
-    // _currencies.addAll(data["response"]["data"]);
-    print("DATA REQUEST ${data["response"]}");
-    print(response.body);
-  }
+  // int firstTime = 0;
 
   //GET BUYS
   List buys = [];
@@ -136,21 +95,6 @@ class TransactionsProvider with ChangeNotifier {
         "https://peertopeer.staging.cloudware.ng/api/completed_transactions_buy.php?user_id=$userId";
     final response = await http.get(Uri.parse(url));
     final data = jsonDecode(response.body);
-
-    // d++;
-
-    // List items = data["response"]["data"];
-
-    print("TRANS BUY DATA REQUESTS $data");
-
-    if (d == 1) {
-      // _currencies.addAll(items);
-    } else {}
-
-    print("BUY $_currencies");
-    // _currencies.addAll(data["response"]["data"]);
-    print("DATA BUY ${data["response"]}");
-    print(response.body);
   }
 
   //PENDING TRANS
@@ -177,25 +121,55 @@ class TransactionsProvider with ChangeNotifier {
 
     print("PENDING DATA REQUESTS $data");
 
-    if (d == 1) {
-      // _currencies.addAll(items);
-    } else {}
-
     pendingTrans.addAll(data['response']['data']);
-
-    // _currencies.addAll(data["response"]["data"]);
-    print("PENDING BUY ${data["response"]}");
-    print(response.body);
   }
 
-  // CONFIRM CURRENCY
-  Future<void> confirmCurrency(String amount, String rate) async {
-    final url =
-        "https://peertopeer.staging.cloudware.ng/api/get_total_for_sell.php";
-    final response =
-        await http.post(Uri.parse(url), body: {"amount": amount, "rate": rate});
+  //INITIATE REQUEST
+  Future initiateRequest(String amount, String baseCurrency,
+      String quoteCurrency, String rate, String timeReference) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String userId = sharedPreferences.getString("userId");
+
+    final url = "";
+    final response = await http.post(Uri.parse(url), body: {
+      "user_id": userId,
+      "amount": amount,
+      "base_currency": baseCurrency,
+      "quote_currency": quoteCurrency,
+      "rate": rate,
+      "time_frame": timeReference
+    });
 
     final responseBody = jsonDecode(response.body);
-    print("CONFIRM CURRENCY: $responseBody");
+  }
+}
+
+class AuthProvider with ChangeNotifier {
+//GET CURRENCIES
+  Future register(
+    String firstName,
+    String lastName,
+    String phone,
+    String email,
+    String password,
+    String country,
+    String confirmPassword,
+    String termsCondition,
+  ) async {
+    final url = "http://peertopeer.staging.cloudware.ng/api/registration.php";
+    final response = await http.post(Uri.parse(url), body: {
+      'first_name': firstName,
+      'last_name': lastName,
+      'phone': phone,
+      'email': email,
+      'password': password,
+      'country': country,
+      'confirm_password': confirmPassword,
+      'terms_condition': termsCondition,
+    });
+    final data = jsonDecode(response.body);
+
+    print("DATA ${data["response"]["data"]}");
+    print(response.body);
   }
 }

@@ -1,5 +1,4 @@
 import 'package:equal_cash/models/http_exception.dart';
-import 'package:equal_cash/providers/auth_provider.dart';
 import 'package:equal_cash/screens/forgot_password.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:equal_cash/screens/registration_screen.dart';
@@ -28,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
 
   Future<void> _submit() async {
-    // CircularProgressIndicator();
     if (!_formKey.currentState.validate()) {
       return;
     }
@@ -37,82 +35,35 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLoading = true;
     });
-    try {
-      await Provider.of<AuthProvider>(context, listen: false)
-          .login(savedData["email"], savedData["password"]);
 
-      showDialog(
-          context: context,
-          builder: (_) {
-            return AlertDialog(
-              title: Text(
-                "Login successful",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.green[900]),
-              ),
-              content: Text(
-                "Welcome back",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            );
-          });
-
-      Future.delayed(Duration(seconds: 3), () {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) {
-            return HomeScreen();
-          }),
-        );
-      });
-    } on HttpException catch (error) {
-      Alert(
-        style: AlertStyle(
-          animationDuration: Duration(milliseconds: 500),
-          animationType: AnimationType.fromTop,
-          titleStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-        ),
-        // desc: error.message,
-        title: error.code == 107 ? "Email Verification" : "Incorrect Details",
+    showDialog(
         context: context,
-        content: Text(
-          error.message,
-          style: TextStyle(
-            fontSize: 15,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        type: error.code == 107 ? AlertType.info : AlertType.warning,
-        buttons: [
-          DialogButton(
-            child: Text(
-              "Okay",
-              style: TextStyle(color: Colors.white, fontSize: 20),
+        builder: (_) {
+          return AlertDialog(
+            title: Text(
+              "Login successful",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: Colors.green[900]),
             ),
-            onPressed: () => Navigator.pop(context),
-            color: Color.fromRGBO(0, 179, 134, 1.0),
-            radius: BorderRadius.circular(0.0),
-          ),
-        ],
-        image: Icon(
-          Icons.info,
-          color: Colors.red[900],
-        ),
-      ).show();
-      setState(() {
-        _isLoading = false;
-      });
-      print(error);
-      return;
-    } catch (error) {
-      throw error;
-    }
+            content: Text(
+              "Welcome back",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        });
 
-    setState(() {
-      _isLoading = false;
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) {
+          return HomeScreen();
+        }),
+      );
     });
+
+    return;
   }
 
   Map<String, dynamic> savedData = {"email": "", "password": ""};

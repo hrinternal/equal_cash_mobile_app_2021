@@ -63,8 +63,6 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                   height: 20,
                 ),
                 FutureBuilder(
-                  future: requests.getUserRequest(),
-                  // initialData: InitialData,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(
@@ -141,7 +139,7 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                                       size: 10,
                                     ),
                                     title: Text(
-                                      "\$100 USD - NGN Naira",
+                                      "${requests.getUserRequests[index]['amount']} ${requests.getUserRequests[index]['base_currency']} - ${requests.getUserRequests[index]['quote_currency']}",
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
@@ -153,7 +151,8 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text("Time frame - 1 hour"),
+                                          Text(
+                                              "Time frame - ${requests.getUserRequests[index]['time_frame']}hrs"),
                                           // Spacer(),
                                           SizedBox(
                                             height: 1,
@@ -173,11 +172,16 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                                     ),
                                     trailing: Container(
                                       child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          Icon(Icons.more_vert),
-                                          Spacer(),
+                                          // Container(
+
+                                          //     color: Colors.amber,
+                                          //     child: Icon(Icons.more_vert)),
+                                          // Spacer(),
                                           Text(
-                                            "now",
+                                            "${requests.getUserRequests[index]['date_created']}",
                                             style: TextStyle(
                                                 color: Color.fromRGBO(
                                                     121, 128, 235, 1)),
@@ -198,15 +202,15 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                 ),
                 SizedBox(height: 70),
                 // Spacer(),
-                InkWell(
-                  onTap: () {},
-                  child: Text(
-                    "What do the colored dots mean?",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromRGBO(121, 128, 235, 1)),
-                  ),
-                )
+                // InkWell(
+                //   onTap: () {},
+                //   child: Text(
+                //     "What do the colored dots mean?",
+                //     style: TextStyle(
+                //         fontWeight: FontWeight.bold,
+                //         color: Color.fromRGBO(121, 128, 235, 1)),
+                //   ),
+                // )
               ],
             ),
           ),

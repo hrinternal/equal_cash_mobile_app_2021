@@ -1,4 +1,3 @@
-import 'package:equal_cash/providers/auth_provider.dart';
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:equal_cash/screens/login_screen.dart';

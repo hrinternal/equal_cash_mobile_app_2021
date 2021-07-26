@@ -1,5 +1,4 @@
 import 'package:equal_cash/models/http_exception.dart';
-import 'package:equal_cash/providers/auth_provider.dart';
 import 'package:equal_cash/screens/create_pin_screen.dart';
 import 'package:equal_cash/screens/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -60,17 +59,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       _isLoading = true;
     });
 
-    try {
-      await Provider.of<AuthProvider>(context, listen: false).register(
-          savedData["country"],
-          savedData["firstname"],
-          savedData["lastname"],
-          savedData["email"],
-          savedData["phonenumber"],
-          savedData["password"],
-          savedData["confirmPassword"],
-          savedData["terms"]);
+    Future.delayed(Duration(seconds: 8), () {
+      Navigator.of(context).pushNamed(LoginScreen.routeName);
+    });
 
+    Future.delayed(Duration(seconds: 5), () {
       //ALERT
       Alert(
         style: AlertStyle(
@@ -79,11 +72,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           titleStyle:
               TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
         ),
-        // desc: error.message,
-
         title: "Registration successful",
         context: context,
-
         content: Text(
           "A verification link has beign sent to ${_emailController.text}. Please click the link to verify.",
           style: TextStyle(fontSize: 14),
@@ -94,49 +84,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           color: Colors.blue[900],
         ),
       ).show();
-      Future.delayed(Duration(seconds: 5), () {
-        Navigator.of(context).pushNamed(LoginScreen.routeName);
-      });
-    } on HttpException catch (error) {
-      Alert(
-        style: AlertStyle(
-          animationDuration: Duration(milliseconds: 500),
-          animationType: AnimationType.fromTop,
-          titleStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-        ),
-        // desc: error.message,
-        title: "USER EXISTS",
-        context: context,
-        content: Text(
-          error.message,
-          style: TextStyle(fontSize: 14),
-          textAlign: TextAlign.center,
-        ),
-        type: AlertType.error,
-        buttons: [
-          DialogButton(
-            child: Text(
-              "Okay",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-            onPressed: () => Navigator.pop(context),
-            color: Color.fromRGBO(0, 179, 134, 1.0),
-            radius: BorderRadius.circular(0.0),
-          ),
-        ],
-        image: Icon(
-          Icons.info,
-          color: Colors.blue[900],
-        ),
-      ).show();
-      setState(() {
-        _isLoading = false;
-      });
-    } catch (error) {
-      throw error;
-    }
-    setState(() {
-      _isLoading = false;
     });
   }
 

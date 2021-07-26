@@ -1,5 +1,4 @@
-import 'package:equal_cash/providers/auth_provider.dart';
-import 'package:equal_cash/providers/recent_activities_provider.dart';
+import 'package:equal_cash/providers/anonymous.dart';
 import 'package:equal_cash/screens/currency_sell_request_screen.dart';
 import 'package:equal_cash/screens/save_profile_screen.dart';
 import 'package:equal_cash/screens/settings_screen.dart';
@@ -16,7 +15,7 @@ class ProfileWidget extends StatefulWidget {
 class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   Widget build(BuildContext context) {
-    final activities = Provider.of<AuthProvider>(context, listen: false);
+    bool activities = false;
 
     final deviceHeight = MediaQuery.of(context).size.height;
     final deviceWidth = MediaQuery.of(context).size.width;
@@ -42,7 +41,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         fontSize: 12),
                   ),
                   trailing: FutureBuilder(
-                    future: activities.getImage(),
                     // initialData: InitialData,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -60,7 +58,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                   width: 20,
                                 )));
                       } else {
-                        if (activities.getProfilePic == null) {
+                        if (activities == false) {
                           return ClipRRect(
                               borderRadius: BorderRadius.circular(100),
                               child: Container(
@@ -82,7 +80,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                   height: 55,
                                   width: 55,
                                   child: Image.network(
-                                    activities.getProfilePic,
+                                    "",
                                     fit: BoxFit.cover,
                                   )));
                         }

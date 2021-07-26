@@ -1,5 +1,4 @@
-import 'package:equal_cash/providers/auth_provider.dart';
-import 'package:equal_cash/providers/recent_activities_provider.dart';
+import 'package:equal_cash/providers/anonymous.dart';
 import 'package:equal_cash/providers/transaction_provider.dart';
 import 'package:equal_cash/screens/all_requests.dart';
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
@@ -37,11 +36,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: AuthProvider()),
-        // ChangeNotifierProvider.value(value: RecentActivitiesProvider())
-        ChangeNotifierProvider(
-          create: (_) => RecentActivitiesProvider(),
-        ),
+
         ChangeNotifierProvider(
           create: (_) => TransactionsProvider(),
         )
