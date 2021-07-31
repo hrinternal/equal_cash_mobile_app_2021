@@ -1,7 +1,14 @@
+import 'package:equal_cash/api/repository.dart';
+import 'package:equal_cash/controllers/activities_controller.dart';
+import 'package:equal_cash/pref.dart';
+import 'package:equal_cash/models/api/user_activities.dart';
 import 'package:equal_cash/models/response_model.dart';
 import 'package:equal_cash/providers/anonymous.dart';
+import 'package:equal_cash/screens/activity_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:equal_cash/models/home_pager_model.dart';
+import 'package:get/get.dart';
+import 'package:retrofit/retrofit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
@@ -12,14 +19,7 @@ class HomeWidget extends StatefulWidget {
 
 class _HomeWidgetState extends State<HomeWidget> {
   int currentPage = 0;
-  String fullname;
-  Future<String> username() async {
-    SharedPreferences username = await SharedPreferences.getInstance();
-
-    fullname = username.getString("fullname");
-
-    return fullname;
-  }
+  String? fullname;
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +39,13 @@ class _HomeWidgetState extends State<HomeWidget> {
             Column(
               children: [
                 ListTile(
-                  title: FutureBuilder(
-                    future: username(),
+                  title: FutureBuilder<String?>(
+                    future: Settings.instance.userFullName,
                     // initialData: InitialData,
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    builder: (BuildContext context,
+                        AsyncSnapshot<String?> snapshot) {
                       return Text(
-                        "Welcome",
+                        "Welcome ${snapshot.data?.split(" ")[0] ?? ""}!",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
@@ -158,7 +159,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                   ),
                   Spacer(),
                   InkWell(
-                      onTap: () {},
+                      onTap: () => Get.toNamed(ActivityScreen.routeName),
                       child: Text(
                         "View more",
                         style: TextStyle(
@@ -178,9 +179,16 @@ class _HomeWidgetState extends State<HomeWidget> {
               child: Container(
                 height: 176,
                 // color: Colors.amber,
-
-                child: Activities(
-                     deviceHeight: deviceHeight),
+                child: FutureBuilder<String?>(
+                    future: Settings.instance.userId,
+                    builder: (context, snapshot) {
+                      String userId = snapshot.data!;
+                      print("user id is $userId");
+                      return ActivitiesWidget(
+                        deviceHeight: deviceHeight,
+                        controller: ActivityController(userId, limit: true),
+                      );
+                    }),
               ),
             )
           ],
@@ -190,80 +198,85 @@ class _HomeWidgetState extends State<HomeWidget> {
   }
 }
 
-class Activities extends StatelessWidget {
-  const Activities({
-    Key key,
-
-    @required this.deviceHeight,
+class ActivitiesWidget extends StatelessWidget {
+  const ActivitiesWidget({
+    Key? key,
+    required this.deviceHeight,
+    required this.controller,
   }) : super(key: key);
 
-
-  final double deviceHeight;
+  final ActivityController controller;
+  final double? deviceHeight;
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return GetBuilder<ActivityController>(
+        init: controller,
+        builder: (controller) {
+          var response2 = controller.activities.response;
+          List<ActDataBean>? activities = response2?.data ?? [];
 
+          var count = activities.length;
+          if (activities.isEmpty) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            return ActivityItem(
+                count: count,
+                activities: activities,
+                deviceHeight: deviceHeight);
+          }
+        });
+  }
+}
 
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container(
-            alignment: Alignment.center,
-            // color: Colors.amber,
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(
-                  strokeWidth: 5,
+class ActivityItem extends StatelessWidget {
+  const ActivityItem({
+    Key? key,
+    required this.count,
+    required this.activities,
+    required this.deviceHeight,
+  }) : super(key: key);
+
+  final int count;
+  final List<ActDataBean> activities;
+  final double? deviceHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: AlwaysScrollableScrollPhysics(),
+      itemCount: count,
+      itemBuilder: (_, index) {
+        ActDataBean activity = activities[index];
+        return activities.isEmpty
+            ? ListTile(
+                title: Text("Loading Empty Activities"),
+                trailing: CircularProgressIndicator())
+            : ListTile(
+                leading: Icon(
+                  Icons.local_activity_rounded,
+                  color: Colors.black,
                 ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  "Loading Recent Activities",
+                title: Text(
+                  activity.description!,
                   style: TextStyle(
-                      color: Colors.blue[900],
-                      fontStyle: FontStyle.italic,
+                      fontSize: deviceHeight! < 700 ? 15 : 17,
+                      color: Color.fromRGBO(14, 129, 59, 1),
                       fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-          );
-        } else {}
-        return ListView.builder(
-          shrinkWrap: true,
-
-          itemBuilder: (_, index) {
-            return recentLimitActivities.isEmpty
-                ? CircularProgressIndicator()
-                : ListTile(
-                    leading: Icon(
-                      Icons.local_activity_rounded,
-                      color: Colors.black,
-                    ),
-                    title: Text(
-                     '',
-                      style: TextStyle(
-                          fontSize: deviceHeight < 700 ? 15 : 17,
-                          color: Color.fromRGBO(14, 129, 59, 1),
-                          fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      "Your last activity was at",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                    ),
-                    trailing: Text(
-                     '',
-                      style: TextStyle(
-                          color: Color.fromRGBO(121, 128, 235, 1),
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  );
-          },
-        );
+                ),
+                subtitle: Text(
+                  "@ ${activity.dateCreated}",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+                trailing: Text(
+                  '',
+                  style: TextStyle(
+                      color: Color.fromRGBO(121, 128, 235, 1),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold),
+                ),
+              );
       },
     );
   }

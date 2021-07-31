@@ -171,7 +171,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 //HEADER WIDGET
 class _HeaderWidget extends StatelessWidget {
   const _HeaderWidget({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

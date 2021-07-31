@@ -75,9 +75,9 @@ class _CurrencySellRequestScreenState extends State<CurrencySellRequestScreen> {
                 //   color: Colors.deepPurpleAccent,
                 // ),
                 isExpanded: true,
-                onChanged: (String newValue) {
+                onChanged: (String? newValue) {
                   setState(() {
-                    currencySelected = newValue;
+                    currencySelected = newValue!;
                   });
                 },
                 items: <String>[

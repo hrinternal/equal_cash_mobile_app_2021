@@ -1,5 +1,6 @@
-import 'package:equal_cash/models/http_exception.dart';
-import 'package:equal_cash/screens/create_pin_screen.dart';
+import 'package:equal_cash/models/api/registration.dart';
+import 'package:get/route_manager.dart';
+import '../api/repository.dart';
 import 'package:equal_cash/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -11,13 +12,14 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String routeName = "registration";
+
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  String country;
+  String? country;
 
   //TEXT CONTROLLERS
   final _firstnameController = TextEditingController();
@@ -49,19 +51,54 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   bool _isLoading = false;
 
   Future<void> _submit() async {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
     if (!isTerm) return;
 
-    _formKey.currentState.save();
+    _formKey.currentState!.save();
     setState(() {
       _isLoading = true;
     });
+    print(savedData);
+    ApiRepository()
+        .register(RegParam(
+            firstName: savedData['firstname'],
+            lastName: savedData['lastname'],
+            phone: savedData['phonenumber'],
+            email: savedData['email'],
+            password: savedData['password'],
+            confirmPassword: savedData['confirmPassword'],
+            country: savedData['country'],
+            termsCondition: savedData['terms'] == true ? "1" : "0"))
+        .then((value) {
+          var result = value.data.response;
+          print(result?.toJson());
+          if (result!.status==200) {
+            gotoLoginScreen(result.toJson());
+          }else{
+            Get.snackbar("", result.message!);
+          }
+        });
+    // AuthRepository()
+    //     .register(
+    //         firstName: savedData['firstname'],
+    //         lastName: savedData['lastname'],
+    //         phone: savedData['phonenumber'],
+    //         email: savedData['email'],
+    //         password: savedData['password'],
+    //         confirmPassword: savedData['confirmPassword'],
+    //         country: savedData['country'],
+    //         termsCondition: savedData['terms'] == true ? "1" : "0")
+    //     .then((Map<String, dynamic> value) {
+    //   gotoLoginScreen(value);
+    //   // return null;
+    // });
+  }
 
-    Future.delayed(Duration(seconds: 8), () {
+  void gotoLoginScreen(Map<String, dynamic> value) {
+    print("User registered and his data are: \n $value");
       Navigator.of(context).pushNamed(LoginScreen.routeName);
-    });
 
     Future.delayed(Duration(seconds: 5), () {
       //ALERT
@@ -85,6 +122,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
       ).show();
     });
+    // return null;
   }
 
   @override
@@ -170,7 +208,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               savedData["firstname"] = fName;
                             },
                             validator: (firstname) {
-                              if (firstname.isEmpty) {
+                              if (firstname!.isEmpty) {
                                 return "Please enter your first name";
                               } else if (!validator.isAlpha(firstname)) {
                                 return "Please enter a valid first name";
@@ -196,7 +234,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               savedData["lastname"] = lName;
                             },
                             validator: (lastname) {
-                              if (lastname.isEmpty) {
+                              if (lastname!.isEmpty) {
                                 return "Please enter your last name";
                               } else if (!validator.isAlpha(lastname)) {
                                 return "Please enter a valid first name";
@@ -236,7 +274,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               savedData["email"] = email;
                             },
                             validator: (email) {
-                              print(EmailValidator.validate(email));
+                              print(EmailValidator.validate(email!));
                               if (EmailValidator.validate(email)) {
                                 return null;
                               } else {
@@ -295,7 +333,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             },
                             validator: (password) {
                               //  if(isLength())
-                              if (password.length < 8 ||
+                              if (password!.length < 8 ||
                                   password.isEmpty ||
                                   !password.contains(RegExp(r"[a-z]")) ||
                                   !password.contains(RegExp(r"[A-Z]")) ||

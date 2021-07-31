@@ -195,7 +195,7 @@ class _UpdatedProfileScreenState extends State<UpdatedProfileScreen> {
 
 class UserData extends StatelessWidget {
   const UserData({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -270,7 +270,7 @@ class UserData extends StatelessWidget {
 
 class UserData1 extends StatelessWidget {
   const UserData1({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

@@ -10,7 +10,7 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  int currentIndex;
+  int? currentIndex;
 
   @override
   void initState() {
@@ -171,7 +171,7 @@ class Hint extends StatelessWidget {
 //REGISTRATION AND LOGIN BUTTONS
 class RegistrationLoginButtons extends StatelessWidget {
   const RegistrationLoginButtons({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

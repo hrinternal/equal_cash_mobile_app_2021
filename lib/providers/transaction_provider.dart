@@ -89,7 +89,7 @@ class TransactionsProvider with ChangeNotifier {
 //Comlpeted Transaction Buy
   Future getCompTransBuy() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String userId = sharedPreferences.getString("userId");
+    String userId = sharedPreferences.getString("userId")!;
 
     final url =
         "https://peertopeer.staging.cloudware.ng/api/completed_transactions_buy.php?user_id=$userId";
@@ -108,7 +108,7 @@ class TransactionsProvider with ChangeNotifier {
 //Comlpeted Transaction Buy
   Future allPendingTrans() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String userId = sharedPreferences.getString("userId");
+    String userId = sharedPreferences.getString("userId")!;
 
     final url =
         "https://peertopeer.staging.cloudware.ng/api/ongoing_transactions.php?user_id=$userId";
@@ -128,7 +128,7 @@ class TransactionsProvider with ChangeNotifier {
   Future initiateRequest(String amount, String baseCurrency,
       String quoteCurrency, String rate, String timeReference) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String userId = sharedPreferences.getString("userId");
+    String userId = sharedPreferences.getString("userId")!;
 
     final url = "";
     final response = await http.post(Uri.parse(url), body: {
@@ -144,18 +144,21 @@ class TransactionsProvider with ChangeNotifier {
   }
 }
 
-class AuthProvider with ChangeNotifier {
+class AuthRepository {
 //GET CURRENCIES
-  Future register(
-    String firstName,
-    String lastName,
-    String phone,
-    String email,
-    String password,
-    String country,
-    String confirmPassword,
-    String termsCondition,
-  ) async {
+
+  AuthRepository();
+
+  Future<Map<String, dynamic>> register({
+    String? firstName,
+    String? lastName,
+    String? phone,
+    String? email,
+    String? password,
+    String? country,
+    String? confirmPassword,
+    String? termsCondition,
+  }) async {
     final url = "http://peertopeer.staging.cloudware.ng/api/registration.php";
     final response = await http.post(Uri.parse(url), body: {
       'first_name': firstName,
@@ -167,9 +170,13 @@ class AuthProvider with ChangeNotifier {
       'confirm_password': confirmPassword,
       'terms_condition': termsCondition,
     });
-    final data = jsonDecode(response.body);
+    var resBody = response.body;
+    final data = jsonDecode(resBody);
 
-    print("DATA ${data["response"]["data"]}");
-    print(response.body);
+    Map<String, dynamic> userData = data["response"]["data"];
+    print("DATA $userData");
+    // print(resBody);
+
+    return userData;
   }
 }

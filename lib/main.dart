@@ -1,5 +1,7 @@
 import 'package:equal_cash/providers/anonymous.dart';
 import 'package:equal_cash/providers/transaction_provider.dart';
+import 'package:equal_cash/api/repository.dart';
+import 'package:equal_cash/screens/activity_screen.dart';
 import 'package:equal_cash/screens/all_requests.dart';
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
 import 'package:equal_cash/screens/change_password_screen.dart';
@@ -25,9 +27,11 @@ import 'package:equal_cash/screens/splash_screen.dart';
 import 'package:equal_cash/screens/update_profile_screen.dart';
 import 'package:equal_cash/screens/updated_profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  ApiRepository().getUserNotifications("287c06d238859462a8f5b1fb0dc8a553");
   runApp(MyApp());
 }
 
@@ -36,12 +40,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-
         ChangeNotifierProvider(
           create: (_) => TransactionsProvider(),
         )
       ],
-      child: MaterialApp(
+      child: GetMaterialApp(
         theme: ThemeData(
             fontFamily: "Poppins",
             primaryColor: Color.fromRGBO(14, 129, 59, 1),
@@ -74,6 +77,7 @@ class MyApp extends StatelessWidget {
           CompletedTransaction.routeName: (_) => CompletedTransaction(),
           ResetForgotPasswordScreen.routeName: (_) =>
               ResetForgotPasswordScreen(),
+          ActivityScreen.routeName: (_) => ActivityScreen(),
         },
       ),
     );

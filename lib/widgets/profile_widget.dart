@@ -1,3 +1,4 @@
+import 'package:equal_cash/pref.dart';
 import 'package:equal_cash/providers/anonymous.dart';
 import 'package:equal_cash/screens/currency_sell_request_screen.dart';
 import 'package:equal_cash/screens/save_profile_screen.dart';
@@ -25,68 +26,73 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           children: [
             Column(
               children: [
-                ListTile(
-                  title: Text(
-                    "Profile",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontSize: 20),
-                  ),
-                  subtitle: Text(
-                    "EqualCash ID ET8450",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        // color: Colors.black,
-                        fontSize: 12),
-                  ),
-                  trailing: FutureBuilder(
-                    // initialData: InitialData,
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Container(
-                                decoration:
-                                    BoxDecoration(border: Border.all(width: 2)),
-                                height: 55,
-                                width: 55,
-                                child: Image.asset(
-                                  "assets/images/loading1.png",
-                                  // fit: BoxFit.cover,
-                                  height: 20,
-                                  width: 20,
-                                )));
-                      } else {
-                        if (activities == false) {
-                          return ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Container(
-                                decoration:
-                                    BoxDecoration(border: Border.all(width: 2)),
-                                height: 55,
-                                width: 55,
-                                child: Icon(
-                                  Icons.person,
-                                  color: Color.fromRGBO(14, 129, 59, 1),
-                                ),
-                              ));
-                        } else {
-                          return ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(width: 2)),
-                                  height: 55,
-                                  width: 55,
-                                  child: Image.network(
-                                    "",
-                                    fit: BoxFit.cover,
-                                  )));
-                        }
-                      }
-                    },
-                  ),
+                FutureBuilder<String?>(
+                  future: Settings.instance.userName,
+                  builder: (context, snapshot) {
+                    return ListTile(
+                      title: Text(
+                        "Profile",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                            fontSize: 20),
+                      ),
+                      subtitle: Text(
+                        "EqualCash ID ${snapshot.data}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            // color: Colors.black,
+                            fontSize: 12),
+                      ),
+                      trailing: FutureBuilder(
+                        // initialData: InitialData,
+                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: Container(
+                                    decoration:
+                                        BoxDecoration(border: Border.all(width: 2)),
+                                    height: 55,
+                                    width: 55,
+                                    child: Image.asset(
+                                      "assets/images/loading1.png",
+                                      // fit: BoxFit.cover,
+                                      height: 20,
+                                      width: 20,
+                                    )));
+                          } else {
+                            if (activities == false) {
+                              return ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(border: Border.all(width: 2)),
+                                    height: 55,
+                                    width: 55,
+                                    child: Icon(
+                                      Icons.person,
+                                      color: Color.fromRGBO(14, 129, 59, 1),
+                                    ),
+                                  ));
+                            } else {
+                              return ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(width: 2)),
+                                      height: 55,
+                                      width: 55,
+                                      child: Image.network(
+                                        "",
+                                        fit: BoxFit.cover,
+                                      )));
+                            }
+                          }
+                        },
+                      ),
+                    );
+                  }
                 ),
               ],
             ),

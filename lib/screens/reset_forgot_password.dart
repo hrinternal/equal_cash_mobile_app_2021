@@ -29,11 +29,11 @@ class _ResetForgotPasswordScreenState extends State<ResetForgotPasswordScreen> {
   Map<String, String> newPassword = {"password": "", "confirmPassword": ""};
 
   Future<void> _submit() async {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    _formKey.currentState.save();
+    _formKey.currentState!.save();
     SharedPreferences getUserId = await SharedPreferences.getInstance();
     print("GET ID ${getUserId.getString('userId')}");
     // await Provider.of<AuthProvider>(context, listen: false).createNewPassword(oldPassword, newPassword, confirmPassword, userId)
@@ -114,11 +114,11 @@ class _ResetForgotPasswordScreenState extends State<ResetForgotPasswordScreen> {
                     textInputAction: TextInputAction.next,
                     controller: _passwordController,
                     onSaved: (password) {
-                      newPassword["password"] = password;
+                      newPassword["password"] = password!;
                     },
                     validator: (password) {
                       //  if(isLength())
-                      if (password.length < 8 ||
+                      if (password!.length < 8 ||
                           password.isEmpty ||
                           !password.contains(RegExp(r"[a-z]")) ||
                           !password.contains(RegExp(r"[A-Z]")) ||
@@ -155,7 +155,7 @@ class _ResetForgotPasswordScreenState extends State<ResetForgotPasswordScreen> {
                     textInputAction: TextInputAction.done,
                     controller: _confirmPasswordController,
                     onSaved: (cPassword) {
-                      newPassword["confirmPassword"] = cPassword;
+                      newPassword["confirmPassword"] = cPassword!;
                     },
                     validator: (cPassword) {
                       //  if(isLength())

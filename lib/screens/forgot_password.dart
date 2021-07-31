@@ -1,4 +1,6 @@
 import 'package:equal_cash/models/http_exception.dart';
+import 'package:equal_cash/models/api/forgot_password.dart';
+import 'package:equal_cash/api/repository.dart';
 
 import 'package:equal_cash/screens/auth_confirmation_screen.dart';
 import 'package:equal_cash/screens/login_screen.dart';
@@ -6,11 +8,13 @@ import 'package:equal_cash/screens/reset_forgot_password.dart';
 import 'package:equal_cash/screens/reset_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   static const String routeName = "forgot-pass";
+
   @override
   _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
 }
@@ -19,6 +23,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final _emailController = TextEditingController();
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -31,15 +36,27 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
 //SUBMIT
   Future<void> _submit() async {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    _formKey.currentState.save();
+    _formKey.currentState!.save();
     setState(() {
       isLoading = true;
     });
 
+    ApiRepository().forgotPassword(_emailController.text).then((value) {
+      var data = value.data;
+      var response = data.response;
+      if (response!.status == 200) {
+        showResetSuccess(data);
+      } else {
+        Get.snackbar("", response.message!);
+      }
+    });
+  }
+
+  void showResetSuccess(ForgotPassword data) {
     Future.delayed(Duration(seconds: 4), () {
       showDialog(
           context: context,
@@ -70,10 +87,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ]),
                 ));
           });
-    });
 
-    Future.delayed(Duration(seconds: 6), () {
-      Navigator.of(context).pushNamed(LoginScreen.routeName);
+      Future.delayed(Duration(seconds: 6), () {
+        Navigator.of(context).pushNamed(LoginScreen.routeName);
+      });
     });
   }
 
@@ -152,10 +169,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     textInputAction: TextInputAction.done,
                     controller: _emailController,
                     onSaved: (email) {
-                      savedData["email"] = email;
+                      savedData["email"] = email!;
                     },
                     validator: (email) {
-                      print(EmailValidator.validate(email));
+                      print(EmailValidator.validate(email!));
                       if (EmailValidator.validate(email)) {
                         return null;
                       } else {

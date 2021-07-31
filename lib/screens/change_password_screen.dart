@@ -23,10 +23,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Map passwords = {"oldPassword": "", "newPassword": "", "confirmPassword": ""};
   bool _isLoading = false;
 
-  bool _isEight;
-  bool _isUpperCase;
-  bool _isSpecialChar;
-  bool _isNumber;
+  bool? _isEight;
+  bool? _isUpperCase;
+  bool? _isSpecialChar;
+  bool? _isNumber;
 
   @override
   void initState() {
@@ -38,11 +38,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   }
 
   Future _submit() async {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    _formKey.currentState.save();
+    _formKey.currentState?.save();
     setState(() {
       _isLoading = true;
     });
@@ -147,7 +147,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           },
                           validator: (password) {
                             //  if(isLength())
-                            if (password.isEmpty) {
+                            if (password!.isEmpty) {
                               return "Please enter your password";
                             } else {
                               return null;
@@ -215,7 +215,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           },
                           validator: (password) {
                             //  if(isLength())
-                            if (password.length < 8 ||
+                            if (password!.length < 8 ||
                                 password.isEmpty ||
                                 !password.contains(RegExp(r"[a-z]")) ||
                                 !password.contains(RegExp(r"[A-Z]")) ||
@@ -250,7 +250,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         // margin: EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            _isEight
+                            _isEight!
                                 ? Icon(
                                     Icons.check_circle_outline_rounded,
                                     color: Colors.green[600],
@@ -270,7 +270,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         // margin: EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            _isUpperCase
+                            _isUpperCase!
                                 ? Icon(
                                     Icons.check_circle_outline_rounded,
                                     color: Colors.green[600],
@@ -290,7 +290,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         // margin: EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            _isSpecialChar
+                            _isSpecialChar!
                                 ? Icon(
                                     Icons.check_circle_outline_rounded,
                                     color: Colors.green[600],
@@ -310,7 +310,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         // margin: EdgeInsets.symmetric(horizontal: 20),
                         child: Row(
                           children: [
-                            _isNumber
+                            _isNumber!
                                 ? Icon(
                                     Icons.check_circle_outline_rounded,
                                     color: Colors.green[600],

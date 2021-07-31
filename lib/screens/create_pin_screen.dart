@@ -15,7 +15,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
   final _pinController = TextEditingController();
 
   var onTapRecognizer;
-  bool shiftEnabled;
+  bool? shiftEnabled;
 
   @override
   void initState() {
@@ -30,10 +30,10 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
     text = '';
   }
 
-  String text;
-  VirtualKeyboardKeyType keyType;
+  late String text;
+  VirtualKeyboardKeyType? keyType;
 
-  VirtualKeyboardKeyAction action;
+  VirtualKeyboardKeyAction? action;
 
   bool isComplete = false;
 
@@ -62,7 +62,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
           text = text + key.text;
           break;
         case VirtualKeyboardKeyAction.Shift:
-          shiftEnabled = !shiftEnabled;
+          shiftEnabled = !shiftEnabled!;
           break;
         default:
       }
@@ -75,7 +75,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
   }
 
   Widget _builder(BuildContext context, VirtualKeyboardKey key) {
-    Widget keyWidget;
+    Widget? keyWidget;
 
     switch (key.keyType) {
       case VirtualKeyboardKeyType.String:
@@ -90,7 +90,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
       print(key.text);
     });
 
-    return keyWidget;
+    return keyWidget!;
   }
 
   // @override
@@ -164,7 +164,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                   controller: _pinController,
                   pinTheme: PinTheme.defaults(
                       borderWidth: 2,
-                      activeColor: Colors.red[900],
+                      activeColor: Colors.red[900]!,
                       inactiveColor: Color.fromRGBO(
                         14,
                         129,

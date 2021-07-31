@@ -1,15 +1,20 @@
+import 'package:equal_cash/pref.dart';
 import 'package:equal_cash/models/http_exception.dart';
+import 'package:equal_cash/models/api/login.dart';
+import 'package:equal_cash/api/repository.dart';
 import 'package:equal_cash/screens/forgot_password.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:equal_cash/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:get/route_manager.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = "login";
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -27,15 +32,34 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
 
   Future<void> _submit() async {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    _formKey.currentState.save();
+    _formKey.currentState!.save();
     setState(() {
       _isLoading = true;
     });
 
+    var mail = _emailController.text;
+    var pass = _passwordController.text;
+    ApiRepository()
+        .login(LoginParam(email: mail, password: pass))
+        .then((value) {
+      var data = value.data;
+      print(data.response!.status);
+      if (data.response!.status == 200) {
+        goToHomeScreen(data);
+      } else {
+        Get.snackbar("", data.response!.message!);
+      }
+    });
+
+    return;
+  }
+
+  void goToHomeScreen(Login data) {
+    print(data.toJson());
     showDialog(
         context: context,
         builder: (_) {
@@ -55,15 +79,20 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         });
 
-    Future.delayed(Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) {
-          return HomeScreen();
-        }),
-      );
-    });
+    LoginData loginData = data.response!.data!;
 
-    return;
+    _saveUser(loginData);
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) {
+        return HomeScreen();
+      }),
+    );
+  }
+
+  _saveUser(LoginData loginData) async {
+    Settings.instance.saveUser(loginData);
+    print(Settings.instance.userFullName);
   }
 
   Map<String, dynamic> savedData = {"email": "", "password": ""};
@@ -123,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 savedData["email"] = email;
                               },
                               validator: (email) {
-                                print(EmailValidator.validate(email));
+                                print(EmailValidator.validate(email!));
                                 if (EmailValidator.validate(email)) {
                                   return null;
                                 } else {
@@ -154,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               },
                               validator: (password) {
                                 //  if(isLength())
-                                if (password.isEmpty) {
+                                if (password!.isEmpty) {
                                   return "Please enter your password";
                                 } else {
                                   return null;

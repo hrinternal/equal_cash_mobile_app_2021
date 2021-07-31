@@ -222,7 +222,7 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
 
 class AlertDialogWidget extends StatelessWidget {
   const AlertDialogWidget({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

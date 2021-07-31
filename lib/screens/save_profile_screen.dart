@@ -34,7 +34,7 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
 
   final _emailController = TextEditingController();
 
-  File _image;
+  File? _image;
   final picker = ImagePicker();
   bool _isUploaded = false;
 
@@ -66,14 +66,14 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
     });
 
     SharedPreferences myId = await SharedPreferences.getInstance();
-    String myIdee = myId.getString("userId");
+    String myIdee = myId.getString("userId")!;
 
     final urlPic =
         "https://peertopeer.staging.cloudware.ng/api/upload_profile_pic.php";
     var stream = new http.ByteStream(
-      DelegatingStream.typed(_image.openRead()),
+      DelegatingStream.typed(_image!.openRead()),
     );
-    var length = await _image.length();
+    var length = await _image!.length();
 
     var uri = Uri.parse(urlPic);
 
@@ -82,7 +82,7 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
     request.fields["user_id"] = myIdee;
 
     var multipartFile =
-        new http.MultipartFile('file', stream, length, filename: _image.path);
+        new http.MultipartFile('file', stream, length, filename: _image!.path);
 
     request.files.add(multipartFile);
     var response = await request.send();
@@ -196,7 +196,7 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
                                     size: 30,
                                   )
                                 : Image.file(
-                                    _image,
+                                    _image!,
                                     fit: BoxFit.cover,
                                   )),
                       ),
@@ -247,7 +247,7 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
                           groupValue: _gender,
                           onChanged: (gender) {
                             setState(() {
-                              _gender = gender;
+                              _gender = gender!;
                             });
                           },
                         ),
@@ -263,7 +263,7 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
                           groupValue: _gender,
                           onChanged: (gender) {
                             setState(() {
-                              _gender = gender;
+                              _gender = gender!;
                             });
                           },
                         ),
