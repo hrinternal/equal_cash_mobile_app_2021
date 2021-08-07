@@ -1,10 +1,14 @@
+import 'package:equal_cash/controllers/transaction.dart';
 import 'package:equal_cash/providers/transaction_provider.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'pending_transactions.dart';
+
 class CompletedTransaction extends StatefulWidget {
   static const routeName = "completed-transaction-screen";
+
   @override
   _CompletedTransactionState createState() => _CompletedTransactionState();
 }
@@ -29,14 +33,16 @@ class _CompletedTransactionState extends State<CompletedTransaction> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-            child: Column(
-              children: [
-                Container(
+      body: Container(
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+          child: Flex(
+            direction: Axis.vertical,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     "Transaction as a buyer",
@@ -46,10 +52,13 @@ class _CompletedTransactionState extends State<CompletedTransaction> {
                         color: Colors.black),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                flex: 6,
+                child: Container(
                   child: TextFormField(
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
@@ -60,212 +69,18 @@ class _CompletedTransactionState extends State<CompletedTransaction> {
                             TextStyle(fontSize: 13, color: Colors.black)),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                flex: 32,
+                child: TransactionBody(
+                  controller: (userId) =>
+                      CompletedTransactionController(userId),
                 ),
-                FutureBuilder(
-                  future: requests.getCompTransBuy(),
-                  // initialData: InitialData,
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (requests.getAddBuys.isEmpty) {
-                      return Container(
-                        child: Column(children: [
-                          Center(
-                              child: Container(
-                            child: Column(
-                              children: [
-                                Container(
-                                    height: 150,
-                                    // color: Colors.red,
-                                    child: Image.asset(
-                                      'assets/images/emptybox.png',
-                                      fit: BoxFit.cover,
-                                    )),
-                                RichText(
-                                    text: TextSpan(children: [
-                                  TextSpan(
-                                      text: 'No ',
-                                      style: TextStyle(
-                                          color: Colors.red,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 45)),
-                                  TextSpan(
-                                      text: 'completed transaction yet!',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20))
-                                ]))
-                              ],
-                            ),
-                          ))
-                        ]),
-                      );
-                    } else {
-                      return Column(
-                        children: [
-                          ListTile(
-                            leading: Icon(
-                              Icons.circle,
-                              size: 10,
-                            ),
-                            title: Text(
-                              "\$100 USD - NGN Naira",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Container(
-                              alignment: Alignment.centerLeft,
-                              // color: Colors.green,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Time frame - 1 hour"),
-                                  // Spacer(),
-                                  SizedBox(
-                                    height: 1,
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 3, vertical: 2),
-                                    color: Colors.grey,
-                                    child: Text(
-                                      "No offers yet",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            trailing: Container(
-                              child: Column(
-                                children: [
-                                  Icon(Icons.more_vert),
-                                  Spacer(),
-                                  Text(
-                                    "now",
-                                    style: TextStyle(
-                                        color:
-                                            Color.fromRGBO(121, 128, 235, 1)),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Divider(
-                            thickness: 2,
-                          ),
-                          ListTile(
-                            leading: Icon(Icons.circle,
-                                size: 10,
-                                color: Theme.of(context).primaryColor),
-                            title: Text(
-                              "\$500,000 NGN - USD Dollars",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Container(
-                              alignment: Alignment.centerLeft,
-                              // color: Colors.green,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Time frame - 1 hour"),
-                                  // Spacer(),
-                                  SizedBox(
-                                    height: 1,
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 3, vertical: 2),
-                                    color: Theme.of(context).primaryColor,
-                                    child: Text(
-                                      "3 Offers",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            trailing: Container(
-                              child: Column(
-                                children: [
-                                  Icon(Icons.more_vert),
-                                  Spacer(),
-                                  Text(
-                                    "10h ago",
-                                    style: TextStyle(
-                                        color:
-                                            Color.fromRGBO(121, 128, 235, 1)),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Divider(
-                            thickness: 2,
-                          ),
-                          ListTile(
-                            leading: Icon(
-                              Icons.circle,
-                              size: 10,
-                              color: Color.fromRGBO(255, 72, 97, 1),
-                            ),
-                            title: Text(
-                              "c1000 GHC - NGN Naira",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Container(
-                              alignment: Alignment.centerLeft,
-                              // color: Colors.green,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Time frame - 1 hour"),
-                                  // Spacer(),
-                                  SizedBox(
-                                    height: 1,
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 3, vertical: 2),
-                                    color: Color.fromRGBO(255, 72, 97, 1),
-                                    child: Text(
-                                      "Expired - 0 Offers",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            trailing: Container(
-                              child: Column(
-                                children: [
-                                  Icon(Icons.more_vert),
-                                  Spacer(),
-                                  Text(
-                                    "1d ago",
-                                    style: TextStyle(
-                                        color:
-                                            Color.fromRGBO(121, 128, 235, 1)),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

@@ -5,8 +5,14 @@ import 'dart:convert';
 import 'dart:io';
 // import 'dart:js';
 
+import 'package:equal_cash/api/repository.dart';
+import 'package:equal_cash/controllers/profile.dart';
+import 'package:equal_cash/models/api/profile.dart';
+import 'package:equal_cash/pref.dart';
+import 'package:get/get.dart';
 import 'package:path/path.dart' as path;
 import 'package:async/async.dart';
+
 // import 'dart:io';
 import 'package:http/http.dart' as http;
 
@@ -17,12 +23,14 @@ import 'package:equal_cash/screens/updated_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 // import 'package:path/path.dart';
 // import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class SaveProfileScreen extends StatefulWidget {
   static const routeName = "save-profile";
+
   @override
   _SaveProfileScreenState createState() => _SaveProfileScreenState();
 }
@@ -65,9 +73,7 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
       _isUploaded = true;
     });
 
-    SharedPreferences myId = await SharedPreferences.getInstance();
-    String myIdee = myId.getString("userId")!;
-
+    String? userId = await Settings.instance.userId;
     final urlPic =
         "https://peertopeer.staging.cloudware.ng/api/upload_profile_pic.php";
     var stream = new http.ByteStream(
@@ -79,7 +85,7 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
 
     var request = new http.MultipartRequest("POST", uri);
 
-    request.fields["user_id"] = myIdee;
+    request.fields["user_id"] = userId!;
 
     var multipartFile =
         new http.MultipartFile('file', stream, length, filename: _image!.path);
@@ -93,14 +99,14 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
   }
 
   Future<void> _submit() async {
-    if (_emailController.text.isEmpty) {
-      setState(() {
-        isAddress = true;
-      });
-      return;
-    }
+    // if (_emailController.text.isEmpty) {
+    //   setState(() {
+    //     isAddress = true;
+    //   });
+    //   return;
+    // }
     //UPLOADED CHECK
-    if (_image == null || !_isUploaded) {
+    if (_image == null /*|| !_isUploaded*/) {
       setState(() {
         isImage = true;
       });
@@ -120,6 +126,31 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
 
     String address = _emailController.text;
 
+    // final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    var imagePath = _image!.path;
+    print("Image path is $imagePath");
+
+    String? userId = await Settings.instance.userId;
+    print("User id is $userId");
+    _uploadImage().then((value) async {
+      ProfileResponseBean? response =
+          await ProfileController().updateProfile(userGender, userId, address);
+      if (response.status == 200) {
+        await Settings.instance.saveAddress(address);
+        Settings.instance.saveGender(userGender).then((value) {
+          if (value) {
+            print(userGender);
+            uploadSuccessAction();
+          }
+        });
+      } else {
+        Get.snackbar("", response.message ?? "Some Error occur!");
+      }
+      print("response is ${response.toJson()}");
+    });
+  }
+
+  void uploadSuccessAction() {
     Future.delayed(Duration(seconds: 4), () {
       showDialog(
           context: context,
@@ -217,15 +248,15 @@ class _SaveProfileScreenState extends State<SaveProfileScreen> {
                           ),
                   ),
 
-                  InkWell(
-                      onTap: _uploadImage,
-                      child: Chip(
-                        label: Text(
-                          'Upload image',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Theme.of(context).primaryColor,
-                      )),
+                  // InkWell(
+                  //     onTap: _uploadImage,
+                  //     child: Chip(
+                  //       label: Text(
+                  //         'Upload image',
+                  //         style: TextStyle(color: Colors.white),
+                  //       ),
+                  //       backgroundColor: Theme.of(context).primaryColor,
+                  //     )),
 
                   SizedBox(
                     height: 30,

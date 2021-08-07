@@ -19,11 +19,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           style: TextStyle(fontSize: 17),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.home_rounded),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(HomeScreen.routeName),
-          ),
+          HomeActionWidget(),
         ],
       ),
       body: Column(
@@ -88,6 +84,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class HomeActionWidget extends StatelessWidget {
+  const HomeActionWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.home_rounded),
+      onPressed: () =>
+          Navigator.of(context).pushNamed(HomeScreen.routeName),
     );
   }
 }

@@ -26,6 +26,7 @@ dependencies:
   retrofit: ^2.0.1
   logger: ^1.0.0
   get: ^4.3.0
+  flutter_svg: ^0.22.0
 
 
 

@@ -31,7 +31,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  ApiRepository().getUserNotifications("287c06d238859462a8f5b1fb0dc8a553");
+  ApiRepository().getUserNotificationsMap("287c06d238859462a8f5b1fb0dc8a553");
   runApp(MyApp());
 }
 

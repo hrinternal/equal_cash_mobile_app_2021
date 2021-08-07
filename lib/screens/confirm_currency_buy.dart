@@ -1,15 +1,20 @@
 // import 'dart:html';
 
+import 'package:equal_cash/api/repository.dart';
+import 'package:equal_cash/models/api/request.dart';
 import 'package:equal_cash/models/currency_model.dart';
+import 'package:equal_cash/pref.dart';
 import 'package:equal_cash/providers/transaction_provider.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:equal_cash/screens/my_request_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ConfirmCurrencyPurchase extends StatefulWidget {
   static const routeName = "currency-confirm";
+
   @override
   _ConfirmCurrencyPurchaseState createState() =>
       _ConfirmCurrencyPurchaseState();
@@ -22,6 +27,34 @@ class _ConfirmCurrencyPurchaseState extends State<ConfirmCurrencyPurchase> {
   double rate = 0.0;
 
   Future initateRequest() async {
+    String? userId = await Settings.instance.userId;
+
+    var amount = amountController.text;
+    var rate = rateController.text;
+    var timeFrame = timeController.text;
+    var initRequestParam = InitRequestParam(
+            userId: userId,
+            amount: amount,
+            baseCurrency: selectedCurrencies[CSELL],
+            quoteCurrency: selectedCurrencies[CBUY],
+            rate: rate,
+            reference: "",
+            timeFrame: timeFrame);
+    ApiRepository()
+        .initiateRequest(initRequestParam)
+        .then((value) {
+      print("${initRequestParam.toJson()}");
+      var message = value.response!.message;
+      print("$message");
+      if (value.response!.status==200) {
+        successAction();
+      }else{
+        Get.snackbar("",message!);
+      }
+    });
+  }
+
+  void successAction() {
     showDialog(
         context: context,
         builder: (_) {

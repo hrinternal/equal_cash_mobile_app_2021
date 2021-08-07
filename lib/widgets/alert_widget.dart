@@ -20,39 +20,40 @@ class _AlertWidgetState extends State<AlertWidget> {
     final deviceWidth = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.all(7.0),
-      child: Column(
+      child: Flex(
+        direction: Axis.vertical,
         children: [
-          Column(
-            children: [
-              ListTile(
-                title: Text(
-                  "Alerts",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20),
-                ),
-                subtitle: Text(
-                  "Be in the know",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      // color: Colors.black,
-                      fontSize: 12),
-                ),
-                trailing: ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      child: Icon(
-                        Icons.notifications,
-                        color: Color.fromRGBO(14, 129, 59, 1),
-                      ),
-                    )),
+          Expanded(
+            flex: 1,
+            child: ListTile(
+              title: Text(
+                "Alerts",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    fontSize: 20),
               ),
-            ],
+              subtitle: Text(
+                "Be in the know",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    // color: Colors.black,
+                    fontSize: 12),
+              ),
+              trailing: ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    child: Icon(
+                      Icons.notifications,
+                      color: Color.fromRGBO(14, 129, 59, 1),
+                    ),
+                  )),
+            ),
           ),
-          AlertListWidget(deviceHeight: deviceHeight),
+          Expanded(            flex: 10,
+              child: AlertListWidget(deviceHeight: deviceHeight)),
           // OldAlert(deviceHeight: deviceHeight),
         ],
       ),
@@ -190,7 +191,7 @@ class AlertItem extends StatelessWidget {
     else if (title == "Offer Counter" || title == "Offer counter")
       return "Offer Countered";
     else if (title == "Offer accept") return "Accepted Offer";
-    return "Others";
+    return title;
   }
 
   @override
@@ -243,35 +244,46 @@ class AlertListWidget extends StatelessWidget {
     return FutureBuilder<String?>(
         future: Settings.instance.userId!,
         builder: (context, snapshot) {
-          var userId = snapshot.data!;
-          return GetBuilder<AlertController>(
-              init: AlertController(userId),
-              builder: (controller) {
-                var notifications = controller.notifications.entries.toList();
-                if (notifications.isEmpty) {
-                  return CircularProgressIndicator();
-                } else {
-                  // if (controller.hasData) {
-                  return Column(
-                    children: notifications
-                        .map(
-                          (data) => InkWell(
-                            onTap: () => Get.snackbar("", data.value.join(",")),
-                            child: Material(
-                              child: AlertItem(
-                                deviceHeight: deviceHeight,
-                                title: data.key,
-                              ),
+          if (!snapshot.hasData) {
+            return Center(
+              child: Text("Empty Notification"),
+            );
+          } else {
+            var userId = snapshot.data!;
+            return GetBuilder<AlertController>(
+                init: AlertController(userId),
+                builder: (controller) {
+                  var notifications =
+                      controller.notifications.value.response?.data ?? [];
+                  if (notifications.isEmpty) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    return ListView.builder(
+                      itemCount: notifications.length,
+                      itemBuilder: (ctx, index) {
+                        return InkWell(
+                          // onTap: () =>
+                          //     Get.snackbar("", data.value.join(",")),
+                          child: Material(
+                            child: AlertItem(
+                              deviceHeight: deviceHeight,
+                              title: notifications[index].notificationHeading ??
+                                  "",
                             ),
                           ),
-                        )
-                        .toList(),
-                  );
-                  // } else {
-                  //   return Text("No Notifications");
-                  // }
-                }
-              });
+                        );
+                      },
+                      shrinkWrap: true,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      // children: notifications
+                      //     .map(
+                      //       (data) =>
+                      //     )
+                      //     .toList(),
+                    );
+                  }
+                });
+          }
         });
   }
 }

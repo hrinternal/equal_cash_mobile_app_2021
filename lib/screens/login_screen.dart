@@ -49,7 +49,9 @@ class _LoginScreenState extends State<LoginScreen> {
       var data = value.data;
       print(data.response!.status);
       if (data.response!.status == 200) {
-        goToHomeScreen(data);
+        LoginData loginData = data.response!.data!;
+
+        _saveUser(loginData).then((value) => goToHomeScreen(data));
       } else {
         Get.snackbar("", data.response!.message!);
       }
@@ -79,10 +81,6 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         });
 
-    LoginData loginData = data.response!.data!;
-
-    _saveUser(loginData);
-
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) {
         return HomeScreen();
@@ -90,9 +88,10 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  _saveUser(LoginData loginData) async {
-    Settings.instance.saveUser(loginData);
-    print(Settings.instance.userFullName);
+  Future _saveUser(LoginData loginData) async {
+    print("Start saving...");
+    await Settings.instance.saveUser(loginData);
+    Settings.instance.user.then((value) => print(value.toJson()));
   }
 
   Map<String, dynamic> savedData = {"email": "", "password": ""};

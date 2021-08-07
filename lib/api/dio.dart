@@ -1,5 +1,12 @@
+import 'dart:io';
+
 import 'package:equal_cash/api/api.dart';
 import 'package:dio/dio.dart';
+import 'package:equal_cash/models/api/offer.dart';
+import 'package:equal_cash/models/api/profile.dart';
+import 'package:equal_cash/models/api/profile_pic.dart';
+import 'package:equal_cash/models/api/request.dart';
+import 'package:equal_cash/models/api/transaction.dart';
 import 'package:equal_cash/models/api/user_activities.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -26,20 +33,65 @@ class ApiDio {
   Future<HttpResponse<ForgotPassword>> forgotPassword(String email) =>
       client.forgotPassword(email);
 
-  Future<HttpResponse<NotificationResponse>> _getUserNotifications(
-          String userId) =>
-      client.getUserNotifications(userId);
+  Future<NotificationResponse> getUserNotifications(String userId) =>
+      client.getUserNotifications(userId).then((value) => value.data);
 
   Future<UserActivities> getUserActivities(String userId) =>
       client.getUserActivities(userId).then((value) => value.data);
 
+  Future<ProfilePicResponse> getUserProfilePic(String userId) =>
+      client.getUserProfilePic(userId).then((value) => value.data);
+
   Future<UserActivities> getUserActivitiesLimit(String userId) =>
       client.getUserActivitiesLimit(userId).then((value) => value.data);
 
-  Future<Map<String, List<DataBean>>> getUserNotifications(String userId) =>
-      _getUserNotifications(userId).then((value) {
+  Future<ProfileResponse> updateProfile(gender, userId, address) =>
+      client.updateProfile(gender, userId, address).then((value) => value.data);
+
+  Future<ProfileResponse> initiateRequest(InitRequestParam param) =>
+      client.initiateRequest(param).then((value) => value.data);
+
+  Future<UserRequestResponse> getUserRequest(String userId) =>
+      client.getUserRequest(userId);
+
+  Future<ProfileResponse> acceptOfferSeller(AcceptOfferParam param) =>
+      client.acceptOfferSeller(param);
+
+  Future<ProfileResponse> counterOfferBuyer(CounterBuyerOffer param) =>
+      client.counterOfferBuyer(param);
+
+  Future<ProfileResponse> editRequest(@Body() EditRequestParam param) =>
+      client.editRequest(param);
+
+  Future<ProfileResponse> deleteRequest(String userId, String uniqueId) =>
+      client.deleteRequest(userId, uniqueId);
+
+  Future<OngoingTransResponse> getPendingTransaction(
+          String userId) =>
+      client.getPendingTransaction(userId).then((value) => value.data);
+
+  Future<OngoingTransResponse> getCompletedTransaction(
+          String userId) =>
+      client.getCompletedTransaction(userId).then((value) => value.data);
+
+  Future<ProfileResponse> updateProfileOld(
+          gender, userId, address, String imagePath) =>
+      client.updateProfile(gender, userId, address).then((value) {
+        if (imagePath.isNotEmpty)
+          return _updateProfilePic(userId, File(imagePath))
+              .then((value) => value.data);
+        else
+          return value.data;
+      });
+
+  Future<HttpResponse<ProfileResponse>> _updateProfilePic(
+          userId, File imageFile) =>
+      client.updateProfilePic(userId, imageFile);
+
+  Future<Map<String, List<DataBean>>> getUserNotificationsMap(String userId) =>
+      getUserNotifications(userId).then((value) {
         Map<String, List<DataBean>> notifications = {};
-        var dataList = value.data.response?.data;
+        var dataList = value.response?.data;
         print(dataList.toString());
         dataList?.forEach((details) {
           String notificationHeading = details.notificationHeading!;

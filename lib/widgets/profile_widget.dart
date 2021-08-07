@@ -1,3 +1,5 @@
+import 'package:equal_cash/api/api.dart';
+import 'package:equal_cash/controllers/profile.dart';
 import 'package:equal_cash/pref.dart';
 import 'package:equal_cash/providers/anonymous.dart';
 import 'package:equal_cash/screens/currency_sell_request_screen.dart';
@@ -6,6 +8,7 @@ import 'package:equal_cash/screens/settings_screen.dart';
 import 'package:equal_cash/screens/update_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:equal_cash/models/home_pager_model.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:provider/provider.dart';
 
 class ProfileWidget extends StatefulWidget {
@@ -27,73 +30,26 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             Column(
               children: [
                 FutureBuilder<String?>(
-                  future: Settings.instance.userName,
-                  builder: (context, snapshot) {
-                    return ListTile(
-                      title: Text(
-                        "Profile",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontSize: 20),
-                      ),
-                      subtitle: Text(
-                        "EqualCash ID ${snapshot.data}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            // color: Colors.black,
-                            fontSize: 12),
-                      ),
-                      trailing: FutureBuilder(
-                        // initialData: InitialData,
-                        builder: (BuildContext context, AsyncSnapshot snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return ClipRRect(
-                                borderRadius: BorderRadius.circular(100),
-                                child: Container(
-                                    decoration:
-                                        BoxDecoration(border: Border.all(width: 2)),
-                                    height: 55,
-                                    width: 55,
-                                    child: Image.asset(
-                                      "assets/images/loading1.png",
-                                      // fit: BoxFit.cover,
-                                      height: 20,
-                                      width: 20,
-                                    )));
-                          } else {
-                            if (activities == false) {
-                              return ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: Container(
-                                    decoration:
-                                        BoxDecoration(border: Border.all(width: 2)),
-                                    height: 55,
-                                    width: 55,
-                                    child: Icon(
-                                      Icons.person,
-                                      color: Color.fromRGBO(14, 129, 59, 1),
-                                    ),
-                                  ));
-                            } else {
-                              return ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(width: 2)),
-                                      height: 55,
-                                      width: 55,
-                                      child: Image.network(
-                                        "",
-                                        fit: BoxFit.cover,
-                                      )));
-                            }
-                          }
-                        },
-                      ),
-                    );
-                  }
-                ),
+                    future: Settings.instance.userName,
+                    builder: (context, snapshot) {
+                      return ListTile(
+                        title: Text(
+                          "Profile",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 20),
+                        ),
+                        subtitle: Text(
+                          "EqualCash ID ${snapshot.data ?? ""}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              // color: Colors.black,
+                              fontSize: 12),
+                        ),
+                        trailing: ProfileImageWidget(),
+                      );
+                    }),
               ],
             ),
             SizedBox(
@@ -218,5 +174,87 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             ),
           ],
         ));
+  }
+}
+
+class ProfileImageWidget extends StatelessWidget {
+  const ProfileImageWidget({
+    Key? key, this.size:55,
+  }) : super(key: key);
+final double size;
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String?>(
+      future: Settings.instance.userId,
+      builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: Container(
+                  decoration: BoxDecoration(border: Border.all(width: 2)),
+                  height: size,
+                  width: size,
+                  child: Image.asset(
+                    "assets/images/loading1.png",
+                    // fit: BoxFit.cover,
+                    height: 20,
+                    width: 20,
+                  )));
+        } else {
+          // if (activities == false) {
+          //   return ClipRRect(
+          //       borderRadius: BorderRadius.circular(100),
+          //       child: Container(
+          //         decoration: BoxDecoration(
+          //             border: Border.all(width: 2)),
+          //         height: 55,
+          //         width: 55,
+          //         child: Icon(
+          //           Icons.person,
+          //           color: Color.fromRGBO(14, 129, 59, 1),
+          //         ),
+          //       ));
+          // } else {
+          var userId = "${snapshot.data ?? ""}";
+          print(userId);
+          var noData = !snapshot.hasData;
+
+          return ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: noData
+                  ? Container(
+                      decoration: BoxDecoration(border: Border.all(width: 2)),
+                      height: size,
+                      width: size,
+                      child: Icon(
+                        Icons.person,
+                        color: Color.fromRGBO(14, 129, 59, 1),
+                      ),
+                    )
+                  : Container(
+                      decoration: BoxDecoration(border: Border.all(width: 2)),
+                      height: size,
+                      width: size,
+                      child: GetBuilder<ProfileController>(
+                          init: ProfileController(userId: userId),
+                          builder: (controller) {
+                            var response = controller.profilePic.value.response;
+                            var profilePic = response?.data?.profilePic;
+                            print(profilePic ?? "NO PIC");
+                            return profilePic != null
+                                ? Image.network(
+                                    profilePic,
+                                    // fit: BoxFit.cover,
+                                  )
+                                : Center(
+                                    child: Text("Empty!"),
+                                  );
+                          }),
+                    ));
+          // }
+          // }
+        }
+      },
+    );
   }
 }

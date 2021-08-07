@@ -3,6 +3,7 @@ import 'package:equal_cash/providers/transaction_provider.dart';
 import 'package:equal_cash/screens/currency_buy.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class CurrencySellWidget extends StatefulWidget {
@@ -87,8 +88,9 @@ class _CurrencySellWidgetState extends State<CurrencySellWidget> {
                                           currencies.getAllCurrencies[index]
                                               ['currency_image']);
                                   print(selectedCurrencies['cSell']);
-                                  Navigator.of(context)
-                                      .pushNamed(CurrencyBuy.routeName);
+                                  Get.toNamed(CurrencyBuy.routeName);
+                                  // Navigator.of(context)
+                                  //     .pushNamed(,arguments: currencySell);
                                 },
                                 leading: ClipRRect(
                                   borderRadius: BorderRadius.circular(100),

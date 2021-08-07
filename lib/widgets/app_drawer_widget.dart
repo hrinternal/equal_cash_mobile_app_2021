@@ -1,3 +1,4 @@
+import 'package:equal_cash/screens/activity_screen.dart';
 import 'package:equal_cash/screens/all_requests.dart';
 import 'package:equal_cash/screens/completed_transactions.dart';
 import 'package:equal_cash/screens/login_screen.dart';
@@ -5,6 +6,7 @@ import 'package:equal_cash/screens/my_request_screen.dart';
 import 'package:equal_cash/screens/pending_transactions.dart';
 import 'package:equal_cash/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AppDrawerWidget extends StatefulWidget {
   @override
@@ -83,6 +85,7 @@ class _AppDrawerWidgetState extends State<AppDrawerWidget> {
             thickness: 1,
           ),
           ListTile(
+            onTap: () => Get.toNamed(ActivityScreen.routeName),
             leading: Icon(
               Icons.recent_actors,
               color: Theme.of(context).primaryColor,

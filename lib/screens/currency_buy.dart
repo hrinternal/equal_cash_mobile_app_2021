@@ -5,15 +5,21 @@ import 'package:equal_cash/screens/currency_sell_request_screen.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class CurrencyBuy extends StatefulWidget {
   static const String routeName = "currency-buy";
+
   @override
   _CurrencyBuyState createState() => _CurrencyBuyState();
 }
 
 class _CurrencyBuyState extends State<CurrencyBuy> {
+  String? currencyBuy;
+
+  String? currencySell;
+
   @override
   Widget build(BuildContext context) {
     final currencies = Provider.of<TransactionsProvider>(context);
@@ -105,8 +111,7 @@ class _CurrencyBuyState extends State<CurrencyBuy> {
                                                 ['currency_image']);
                                     print(selectedCurrencies['cBuyImg']);
                                     print(selectedCurrencies['cBuy']);
-                                    Navigator.of(context).pushNamed(
-                                        ConfirmCurrencyPurchase.routeName);
+                                    Get.toNamed(ConfirmCurrencyPurchase.routeName);
                                   },
                                   leading: ClipRRect(
                                     borderRadius: BorderRadius.circular(100),

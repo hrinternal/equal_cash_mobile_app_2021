@@ -19,58 +19,64 @@ class Settings {
   Future<String?>? getSetting(String id) =>
       prefs?.then((value) => value.getString(id));
 
-  saveUser(LoginData loginData) {
-    saveSetting('user_id', loginData.uniqueId!);
-    saveSetting('fullName', loginData.fullName!);
-    saveSetting('user_name', loginData.username!);
-    saveSetting('id', loginData.id!);
-    saveSetting('dateCreated', loginData.dateCreated!);
-    saveSetting('email', loginData.email!);
-    saveSetting('phone', loginData.phone!);
-    savePassword(loginData);
-    saveActiveStatus(loginData);
-    setAddress(loginData);
-    saveCountry(loginData);
-    saveCurrency(loginData);
-    saveGender(loginData);
-    saveProfilePic(loginData);
+  saveUser(LoginData loginData) async {
+    saveSetting('user_id', loginData.uniqueId ?? await userId ?? "");
+    saveSetting('fullName', loginData.fullName ?? await userFullName ?? "");
+    saveSetting('user_name', loginData.username ?? await userName ?? "");
+    saveSetting('id', loginData.id ?? await userId ?? "");
+    saveSetting('email', loginData.email ?? await email ?? "");
+    saveSetting('phone', loginData.phone ?? await phone ?? "");
+    await saveDateCreated(loginData.dateCreated);
+    await savePassword(loginData.password);
+    await saveActiveStatus(loginData.activeStatus);
+    await saveAddress(loginData.address);
+    await saveCountry(loginData.country);
+    await saveCurrency(loginData.currency);
+    await saveGender(loginData.gender);
+    await saveProfilePic(loginData.profilePic);
   }
 
-  Future<bool>? savePassword(LoginData loginData) =>
-      saveSetting('password', loginData.password!);
+  Future<dynamic> saveDateCreated(String? loginData) async {
+    return saveSetting(
+      'dateCreated', loginData ?? await dateCreated ?? "");
+  }
 
-  Future<bool>? saveActiveStatus(LoginData loginData) =>
-      saveSetting('activeStatus', loginData.activeStatus!);
+  Future<bool>? savePassword(String? loginData) async =>
+      await saveSetting('password', loginData ?? await password ?? "");
 
-   Future<bool>? saveProfilePic(LoginData loginData) =>
-      saveSetting('profilePic', loginData.profilePic!);
+  Future<bool>? saveActiveStatus(String? loginData) async =>
+      await saveSetting('activeStatus', loginData ?? await activeStatus ?? "");
 
-  Future<bool>? saveGender(LoginData loginData) =>
-      saveSetting('gender', loginData.gender!);
+  Future<bool>? saveProfilePic(String? loginData) async =>
+      await saveSetting('profilePic', loginData ?? await profilePic ?? "");
 
-  Future<bool>? saveCurrency(LoginData loginData) =>
-      saveSetting('currency', loginData.currency!);
+  Future<bool> saveGender(String? loginData) async =>
+      await saveSetting('gender', loginData ?? await gender ?? "");
 
-  Future<bool>? saveCountry(LoginData loginData) =>
-      saveSetting('country', loginData.country!);
+  Future<bool>? saveCurrency(String? loginData) async =>
+      await saveSetting('currency', loginData ?? await currency ?? "");
 
-  Future<bool>? setAddress(LoginData loginData) =>
-      saveSetting('address', loginData.address!);
+  Future<bool>? saveCountry(String? loginData) async =>
+      await saveSetting('country', loginData ?? await country ?? "");
 
-  // static Future<LoginData> get user async => LoginData(
-  //       username: userName,
-  //       uniqueId: userId,
-  //       fullName: userFullName,
-  //       email: email,
-  //       country: country,
-  //       password: password,
-  //       phone: phone,
-  //       activeStatus: activeStatus,
-  //       address: address,
-  //       currency: currency,
-  //       dateCreated: dateCreated,
-  //       gender: gender,
-  //     );
+  Future<bool>? saveAddress(String? loginData) async =>
+      await saveSetting('address', loginData ?? await address ?? "");
+
+  Future<LoginData> get user async => LoginData(
+        username: await userName,
+        uniqueId: await userId,
+        id: await userId,
+        fullName: await userFullName,
+        email: await email,
+        country: await country,
+        password: await password,
+        phone: await phone,
+        activeStatus: await activeStatus,
+        address: await address,
+        currency: await currency,
+        dateCreated: await dateCreated,
+        gender: await gender,
+      );
 
   Future<String?>? get userId => getSetting("user_id");
 
@@ -96,5 +102,5 @@ class Settings {
 
   Future<String?>? get gender => getSetting("gender");
 
-// static String? id;
+  Future<String?>? get profilePic => getSetting("profilePic");
 }

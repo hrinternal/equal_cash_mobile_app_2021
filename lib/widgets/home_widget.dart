@@ -1,5 +1,5 @@
 import 'package:equal_cash/api/repository.dart';
-import 'package:equal_cash/controllers/activities_controller.dart';
+import 'package:equal_cash/controllers/activities.dart';
 import 'package:equal_cash/pref.dart';
 import 'package:equal_cash/models/api/user_activities.dart';
 import 'package:equal_cash/models/response_model.dart';
@@ -182,12 +182,18 @@ class _HomeWidgetState extends State<HomeWidget> {
                 child: FutureBuilder<String?>(
                     future: Settings.instance.userId,
                     builder: (context, snapshot) {
-                      String userId = snapshot.data!;
-                      print("user id is $userId");
-                      return ActivitiesWidget(
-                        deviceHeight: deviceHeight,
-                        controller: ActivityController(userId, limit: true),
-                      );
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: Text("Empty!"),
+                        );
+                      } else {
+                        String userId = snapshot.data!;
+                        print("user id is $userId");
+                        return ActivitiesWidget(
+                          deviceHeight: deviceHeight,
+                          controller: ActivityController(userId, limit: true),
+                        );
+                      }
                     }),
               ),
             )

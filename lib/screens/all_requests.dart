@@ -1,10 +1,13 @@
 import 'package:equal_cash/providers/transaction_provider.dart';
 import 'package:equal_cash/screens/home_screen.dart';
+import 'package:equal_cash/screens/my_request_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class AllRequestScreen extends StatefulWidget {
   static const routeName = "all-request-screen";
+
   @override
   _AllRequestScreenState createState() => _AllRequestScreenState();
 }
@@ -131,7 +134,10 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
                                                       .size
                                                       .width *
                                                   0.9,
-                                              child: AlertDialogWidget(),
+                                              child: AlertDialogWidget(
+                                                  data: requests
+                                                      .getAllRequest[index],
+                                                  options: "all"),
                                             );
                                           });
                                     },
@@ -220,93 +226,40 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
   }
 }
 
-class AlertDialogWidget extends StatelessWidget {
-  const AlertDialogWidget({
-    Key? key,
-  }) : super(key: key);
+enum AllRequestAction { accept, counter }
 
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Row(
-        children: [
-          Text(
-            "Sell request summary",
-            style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
-          ),
-          Spacer(),
-          IconButton(
-              icon: Icon(
-                Icons.cancel,
-                color: Colors.red[900],
-              ),
-              onPressed: () => Navigator.of(context).pop())
-        ],
-      ),
-      content: Container(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: Text("From"),
-              trailing: Text(
-                "\$100USD",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
+Future<void> showAllRequestOptions(
+    {required Function(AllRequestAction action) onClick}) async {
+  switch (await showDialog<AllRequestAction>(
+      context: Get.context!,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Select an Action'),
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, AllRequestAction.accept);
+              },
+              child: const Text('Accept Offer'),
             ),
-            ListTile(
-              title: Text("To"),
-              trailing: Text(
-                "\N48,000",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            ListTile(
-              title: Text("Exchange rate"),
-              trailing: Text(
-                "\$1USD - N480 NGN",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(121, 128, 235, 1)),
-              ),
-            ),
-            ListTile(
-              title: Text("Time frame"),
-              trailing: Text(
-                "24 Hrs",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(121, 128, 235, 1)),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: double.maxFinite,
-              // margin: EdgeInsets.symmetric(horizontal: 20),
-              child: FlatButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                padding: EdgeInsets.symmetric(vertical: 13),
-                onPressed: () {
-                  // Navigator.of(context)
-                  //     .pushNamed(SaveProfileScreen.routeName);
-                },
-                child: Text(
-                  'Create request',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16),
-                ),
-                color: Theme.of(context).primaryColor,
-              ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, AllRequestAction.counter);
+              },
+              child: const Text('Counter Offer'),
             ),
           ],
-        ),
-      ),
-    );
+        );
+      })) {
+    case AllRequestAction.accept:
+      onClick(AllRequestAction.accept);
+      break;
+    case AllRequestAction.counter:
+      onClick(AllRequestAction.counter);
+      break;
+    case null:
+      // dialog dismissed
+      break;
   }
 }
+
