@@ -122,6 +122,7 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
                             itemCount: requests.getAllRequest.length,
                             shrinkWrap: true,
                             itemBuilder: (_, index) {
+                              var request = requests.getAllRequest[index];
                               return Column(
                                 children: [
                                   ListTile(
@@ -135,8 +136,7 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
                                                       .width *
                                                   0.9,
                                               child: AlertDialogWidget(
-                                                  data: requests
-                                                      .getAllRequest[index],
+                                                  data: request,
                                                   options: "all"),
                                             );
                                           });
@@ -146,7 +146,7 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
                                       size: 10,
                                     ),
                                     title: Text(
-                                      "${requests.getAllRequest[index]['amount']} ${requests.getAllRequest[index]['base_currency']} - ${requests.getAllRequest[index]['quote_currency']}",
+                                      "${request['amount']} ${request['base_currency']} - ${request['quote_currency']}",
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
@@ -159,21 +159,12 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                              "Time frame -  ${requests.getAllRequest[index]['time_frame']}hr"),
+                                              "Time frame -  ${request['time_frame']}hr"),
                                           // Spacer(),
                                           SizedBox(
                                             height: 1,
                                           ),
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 3, vertical: 2),
-                                            color: Colors.grey,
-                                            child: Text(
-                                              "No offers yet",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          )
+                                          RequestLabel(status:request['status']??"0", numOffer: request['no_of_offer']??0,)
                                         ],
                                       ),
                                     ),
@@ -185,7 +176,7 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
                                           // Icon(Icons.more_vert),
 
                                           Text(
-                                            requests.getAllRequest[index]
+                                            request
                                                 ['date_created'],
                                             style: TextStyle(
                                                 color: Color.fromRGBO(

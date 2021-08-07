@@ -142,6 +142,7 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                                       shrinkWrap: true,
                                       physics: AlwaysScrollableScrollPhysics(),
                                       itemBuilder: (_, index) {
+                                        var request = requests[index];
                                         return Column(
                                           children: [
                                             ListTile(
@@ -157,7 +158,7 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                                                             0.9,
                                                         child: AlertDialogWidget<
                                                             UserRequestDataBean>(
-                                                          data: requests[index],
+                                                          data: request,
                                                           options: "mine",
                                                         ),
                                                       );
@@ -168,7 +169,7 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                                                 size: 10,
                                               ),
                                               title: Text(
-                                                "${requests[index].amount} ${requests[index].base_currency} - ${requests[index].quote_currency}",
+                                                "${request.amount} ${request.base_currency} - ${request.quote_currency}",
                                                 style: TextStyle(
                                                     color: Colors.black,
                                                     fontWeight:
@@ -182,12 +183,12 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                        "Time frame - ${requests[index].time_frame}hrs"),
+                                                        "Time frame - ${request.time_frame}hrs"),
                                                     // Spacer(),
                                                     SizedBox(
                                                       height: 1,
                                                     ),
-                                                    RequestLabel()
+                                                    RequestLabel(status: request.status??"0", numOffer: request.no_of_offer??0)
                                                   ],
                                                 ),
                                               ),
@@ -203,7 +204,7 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                                                     //     child: Icon(Icons.more_vert)),
                                                     // Spacer(),
                                                     Text(
-                                                      "${requests[index].date_created}",
+                                                      "${request.date_created}",
                                                       style: TextStyle(
                                                           color: Color.fromRGBO(
                                                               121,
@@ -248,20 +249,22 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
 
 class RequestLabel extends StatelessWidget {
   const RequestLabel({
-    Key? key,
+    Key? key, required this.status, required this.numOffer,
   }) : super(key: key);
-
+final String status;
+final num numOffer;
   @override
   Widget build(BuildContext context) {
+    var noOffer = status=="0";
     return Material(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(4))),
-      color: Colors.grey,
+      color: noOffer?Colors.grey:Color.fromARGB(255, 13, 183, 83),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Text(
-          "No offers yet",
-          style: TextStyle(fontSize: 12, color: Colors.white),
+          numOffer==0?"No offers yet":("$numOffer ${numOffer > 1?"offers":"offer"} "),
+          style: TextStyle(fontSize: 12, color: Colors.white,fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -294,11 +297,13 @@ class AlertDialogWidget<T> extends StatelessWidget {
     var requestId = myData?.unique_id ?? allData?['unique_id'] ?? "";
     var userId = myData?.user_id ?? allData?['user_id'] ?? "";
     String rate = myData?.rate ?? allData?['rate'] ?? "";
+    String status = myData?.status ?? allData?['status'] ?? "";
+    num numOffer = myData?.no_of_offer ?? num.parse(allData?['no_of_offer']?? "0") ;
     return AlertDialog(
       contentPadding: EdgeInsets.all(5),
       title: ListTile(
           contentPadding: EdgeInsets.zero,
-          leading: RequestLabel(),
+          leading: RequestLabel(status: status,numOffer: numOffer),
           trailing: InkWell(
             onTap: () => Navigator.of(context).pop(),
             child: Icon(
@@ -361,7 +366,7 @@ class AlertDialogWidget<T> extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 10),
                   onPressed: () {
                     Get.back();
-                    if (options == "mine") {
+                    if (numOffer>0) {
                       _showMyRequestOptions(onClick: (option) {
                         Get.back();
                         switch (option) {
