@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.equal_cash">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="equal_cash"
         android:icon="@mipmap/ic_launcher">

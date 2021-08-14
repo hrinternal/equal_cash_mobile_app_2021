@@ -7,11 +7,13 @@ import 'package:equal_cash/providers/transaction_provider.dart';
 import 'package:equal_cash/screens/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../pref.dart';
 import 'all_requests.dart';
+import 'package:flutterwave/flutterwave.dart';
 
 class MyRequestScreen extends StatefulWidget {
   static const routeName = "request-screen";
@@ -188,7 +190,13 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
                                                     SizedBox(
                                                       height: 1,
                                                     ),
-                                                    RequestLabel(status: request.status??"0", numOffer: request.no_of_offer??0)
+                                                    RequestLabel(
+                                                        status:
+                                                            request.status ??
+                                                                "0",
+                                                        numOffer: request
+                                                                .no_of_offer ??
+                                                            0)
                                                   ],
                                                 ),
                                               ),
@@ -249,22 +257,28 @@ class _MyRequestScreenState extends State<MyRequestScreen> {
 
 class RequestLabel extends StatelessWidget {
   const RequestLabel({
-    Key? key, required this.status, required this.numOffer,
+    Key? key,
+    required this.status,
+    required this.numOffer,
   }) : super(key: key);
-final String status;
-final num numOffer;
+  final String status;
+  final num numOffer;
+
   @override
   Widget build(BuildContext context) {
-    var noOffer = status=="0";
+    var noOffer = status == "0";
     return Material(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(4))),
-      color: noOffer?Colors.grey:Color.fromARGB(255, 13, 183, 83),
+      color: noOffer ? Colors.grey : Color.fromARGB(255, 13, 183, 83),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Text(
-          numOffer==0?"No offers yet":("$numOffer ${numOffer > 1?"offers":"offer"} "),
-          style: TextStyle(fontSize: 12, color: Colors.white,fontWeight: FontWeight.bold),
+          numOffer == 0
+              ? "No offers yet"
+              : ("$numOffer ${numOffer > 1 ? "offers" : "offer"} "),
+          style: TextStyle(
+              fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -298,12 +312,13 @@ class AlertDialogWidget<T> extends StatelessWidget {
     var userId = myData?.user_id ?? allData?['user_id'] ?? "";
     String rate = myData?.rate ?? allData?['rate'] ?? "";
     String status = myData?.status ?? allData?['status'] ?? "";
-    num numOffer = myData?.no_of_offer ?? num.parse(allData?['no_of_offer']?? "0") ;
+    num numOffer =
+        myData?.no_of_offer ?? num.parse(allData?['no_of_offer'] ?? "0");
     return AlertDialog(
       contentPadding: EdgeInsets.all(5),
       title: ListTile(
           contentPadding: EdgeInsets.zero,
-          leading: RequestLabel(status: status,numOffer: numOffer),
+          leading: RequestLabel(status: status, numOffer: numOffer),
           trailing: InkWell(
             onTap: () => Navigator.of(context).pop(),
             child: Icon(
@@ -366,7 +381,7 @@ class AlertDialogWidget<T> extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 10),
                   onPressed: () {
                     Get.back();
-                    if (numOffer>0) {
+                    if (numOffer > 0) {
                       _showMyRequestOptions(onClick: (option) {
                         Get.back();
                         switch (option) {
@@ -383,7 +398,10 @@ class AlertDialogWidget<T> extends StatelessWidget {
                       showAllRequestOptions(onClick: (option) {
                         switch (option) {
                           case AllRequestAction.accept:
-                            _showAcceptDialog(requestId, amount, bCurrency);
+                            if (isFlutterWaveCurrency(bCurrency))
+                              _payWithCard(bCurrency, amount);
+                            else
+                              _showAcceptDialog(requestId, amount, bCurrency);
                             break;
                           case AllRequestAction.counter:
                             _showCounterDialog(requestId, amount, bCurrency);
@@ -417,6 +435,61 @@ class AlertDialogWidget<T> extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool isFlutterWaveCurrency(bCurrency) {
+    return bCurrency == FlutterwaveCurrency.NGN ||
+        bCurrency == FlutterwaveCurrency.KES ||
+        bCurrency == FlutterwaveCurrency.RWF ||
+        bCurrency == FlutterwaveCurrency.UGX ||
+        bCurrency == FlutterwaveCurrency.ZMW ||
+        bCurrency == FlutterwaveCurrency.GHS ||
+        bCurrency == FlutterwaveCurrency.XAF ||
+        bCurrency == FlutterwaveCurrency.XOF ||
+        bCurrency == FlutterwaveCurrency.ZAR;
+  }
+
+  void _payWithCard(currency, amount) async {
+    bool checkPaymentIsSuccessful(final ChargeResponse response) =>
+        response.data?.status == FlutterwaveConstants.SUCCESSFUL &&
+        response.data?.currency == currency &&
+        response.data?.amount == amount &&
+        response.data?.txRef == "ACCEPT";
+    try {
+      Flutterwave flutterwave = Flutterwave.forUIPayment(
+          context: Get.context!,
+          encryptionKey: "3aa3dc891256e6c2e639510c",
+          publicKey: "FLWPUBK-c4a3a1b7b28133bf81d83e0bbc87ffe0-X",
+          currency: currency,
+          amount: amount,
+          email: "valid@email.com",
+          fullName: "Valid Full Name",
+          // txRef: this.txref,
+          txRef: "ACCEPT",
+          isDebugMode: true,
+          phoneNumber: "0123456789",
+          acceptCardPayment: true,
+          acceptUSSDPayment: false,
+          acceptAccountPayment: false,
+          acceptFrancophoneMobileMoney: false,
+          acceptGhanaPayment: false,
+          acceptMpesaPayment: false,
+          acceptRwandaMoneyPayment: true,
+          acceptUgandaPayment: false,
+          acceptZambiaPayment: false);
+
+      final ChargeResponse response =
+          await flutterwave.initializeForUiPayments();
+      if (checkPaymentIsSuccessful(response)) {
+        print(response);
+        _showAcceptSuccessDialog(amount,currency);
+      } else {
+        print("Not successful");
+        print(response);
+      }
+    } catch (error) {
+      print(error);
+    }
   }
 
   void _showEditDialog(requestId) {
@@ -782,7 +855,7 @@ class AcceptOfferWidget extends StatelessWidget {
                       transactionId: ""))
                   .then((value) {
                 Get.back();
-                _showAcceptSuccessDialog();
+                _showAcceptSuccessDialog(amount,currency);
                 print(value.response!.message);
               });
             }),
@@ -792,50 +865,50 @@ class AcceptOfferWidget extends StatelessWidget {
     );
   }
 
-  void _showAcceptSuccessDialog() {
-    Get.dialog(AlertDialog(
-      title: Center(
-        child: Text(
-          "You accepted an offer",
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-        ),
-      ),
-      content: Container(
-        height: Get.height * 0.34,
-        child: Flex(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          direction: Axis.vertical,
-          children: [
-            SvgPicture.asset("assets/images/mark.svg",
-                semanticsLabel: 'Acme Logo'),
-            SizedBox(
-              height: 15,
-            ),
-            AlertMessageWidget(
-                alertMessage:
-                    "YOU HAVE JUST ACCEPTED AN OFFER. TRANSFER TO 2076354427 (FIDELITY BANK)"),
-            SizedBox(
-              height: 20,
-            ),
-            AlertPriceTile(
-                imagePath: "assets/images/usd.svg",
-                amount: amount,
-                currency: currency),
-            SizedBox(
-              height: 15,
-            ),
-            SubmitButton(
-              text: "Ok",
-              onClick: () => Get.back(),
-            )
-          ],
-        ),
-      ),
-    ));
-  }
-}
 
+}
+void _showAcceptSuccessDialog(amount,currency) {
+  Get.dialog(AlertDialog(
+    title: Center(
+      child: Text(
+        "You accepted an offer",
+        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+      ),
+    ),
+    content: Container(
+      height: Get.height * 0.34,
+      child: Flex(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        direction: Axis.vertical,
+        children: [
+          SvgPicture.asset("assets/images/mark.svg",
+              semanticsLabel: 'Acme Logo'),
+          SizedBox(
+            height: 15,
+          ),
+          AlertMessageWidget(
+              alertMessage:
+              "YOU HAVE JUST ACCEPTED AN OFFER. TRANSFER TO 2076354427 (FIDELITY BANK)"),
+          SizedBox(
+            height: 20,
+          ),
+          AlertPriceTile(
+              imagePath: "assets/images/usd.svg",
+              amount: amount,
+              currency: currency),
+          SizedBox(
+            height: 15,
+          ),
+          SubmitButton(
+            text: "Ok",
+            onClick: () => Get.back(),
+          )
+        ],
+      ),
+    ),
+  ));
+}
 class AlertPriceTile extends StatelessWidget {
   const AlertPriceTile({
     Key? key,

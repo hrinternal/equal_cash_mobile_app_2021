@@ -72,14 +72,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             country: savedData['country'],
             termsCondition: savedData['terms'] == true ? "1" : "0"))
         .then((value) {
-          var result = value.data.response;
-          print(result?.toJson());
-          if (result!.status==200) {
-            gotoLoginScreen(result.toJson());
-          }else{
-            Get.snackbar("", result.message!);
-          }
-        });
+      var result = value.data.response;
+      print(result?.toJson());
+      if (result!.status == 200) {
+        gotoLoginScreen(result.toJson());
+      } else {
+        Get.snackbar("", result.message!);
+      }
+    });
     // AuthRepository()
     //     .register(
     //         firstName: savedData['firstname'],
@@ -98,30 +98,30 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   void gotoLoginScreen(Map<String, dynamic> value) {
     print("User registered and his data are: \n $value");
-      Navigator.of(context).pushNamed(LoginScreen.routeName);
-
-    Future.delayed(Duration(seconds: 5), () {
-      //ALERT
-      Alert(
-        style: AlertStyle(
-          animationDuration: Duration(milliseconds: 500),
-          animationType: AnimationType.fromTop,
-          titleStyle:
-              TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-        ),
-        title: "Registration successful",
-        context: context,
-        content: Text(
-          "A verification link has beign sent to ${_emailController.text}. Please click the link to verify.",
-          style: TextStyle(fontSize: 14),
-        ),
-        type: AlertType.info,
-        image: Icon(
-          Icons.check_circle_outline_rounded,
-          color: Colors.blue[900],
-        ),
-      ).show();
+//ALERT
+    Alert(
+      style: AlertStyle(
+        animationDuration: Duration(milliseconds: 500),
+        animationType: AnimationType.fromTop,
+        titleStyle: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+      ),
+      title: "Registration successful",
+      context: context,
+      content: Text(
+        "A verification link has being sent to ${_emailController.text}. Please click the link to verify.",
+        style: TextStyle(fontSize: 14),
+      ),
+      type: AlertType.info,
+      image: Icon(
+        Icons.check_circle_outline_rounded,
+        color: Colors.blue[900],
+      ),
+    ).show().then((value) {
+      // Future.delayed(Duration(seconds: 5), () {
+        Navigator.of(context).pushNamed(LoginScreen.routeName);
+      // });
     });
+
     // return null;
   }
 
@@ -194,7 +194,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 print(country);
                               },
                               flagDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100)),
+                                  borderRadius: BorderRadius.circular(0)),
                             ),
                           ),
                           Divider(
