@@ -5,13 +5,21 @@ part 'offer.g.dart';
 
 @JsonSerializable()
 class CounterBuyerOffer {
-  String? request_id;
-  String? user_id;
-  String? counter_time;
-  String? counter_rate;
-  String? counter_amount;
+  @JsonKey(name:"request_id")
+  String? requestId;
+  @JsonKey(name:"user_id")
+  String? userId;
 
-  CounterBuyerOffer({this.request_id, this.user_id, this.counter_time, this.counter_rate, this.counter_amount});
+  @JsonKey(name:"counter_time")
+  String? counterTime;
+
+  @JsonKey(name:"counter_rate")
+  String? counterRate;
+
+  @JsonKey(name:"counter_amount")
+  String? counterAmount;
+
+  CounterBuyerOffer({this.requestId, this.userId, this.counterTime, this.counterRate, this.counterAmount});
 
   factory CounterBuyerOffer.fromJson(Map<String, dynamic> json) => _$CounterBuyerOfferFromJson(json);
 

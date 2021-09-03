@@ -1008,8 +1008,8 @@ class _CounterFormWidgetState extends State<CounterFormWidget> {
             print(widget.requestId);
             ApiRepository()
                 .counterOfferBuyer(CounterBuyerOffer(
-              request_id: widget.requestId,
-              user_id: userId,
+              requestId: widget.requestId,
+              userId: userId,
               counter_time: _timeController.text,
               counter_amount: _dropdownValue,
               counter_rate: _rateController.text,
